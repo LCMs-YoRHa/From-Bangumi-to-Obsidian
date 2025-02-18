@@ -4,7 +4,11 @@ import re
 
 # 利用正则筛除文件名内不受支持的字符
 def sanitize_filename(filename):
-    return re.sub(r'[\\/*?:"<>|]', "", filename)
+    sanitized = re.sub(r'[\\/*?:"<>|]', "", filename)
+# 确保检测后文件以.md结尾
+    if not sanitized.endswith(".md"):
+        sanitized += ".md"
+    return sanitized
 
 # 读取用户user_id和token
 def read_credentials(file_path):
