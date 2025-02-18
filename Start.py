@@ -9,6 +9,7 @@ user_id, token = read_credentials('credentials.txt')
 print("请选择功能:")
 print("1.导入用户个人全部收藏条目")
 print("2.导入用户个人单个收藏条目")
+print("3.根据本地subject_ids.txt文件逐个写入条目")
 choice = input("请输入数字选择功能:")
 
 if choice == "1":
@@ -36,5 +37,10 @@ elif choice == "2":
         print("开始写入文件.........")
         write_extended_subject_data(user_id, subject_id, token)
         print("文件写入完成")
+
+elif choice == "3":
+    print("开始写入文件.........")
+    process_subject_ids(user_id, token)
+    print("文件写入完成")
 
 

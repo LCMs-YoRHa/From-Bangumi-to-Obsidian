@@ -1,6 +1,7 @@
 import time
 import Bangumi
 import re
+import os
 
 # 利用正则筛除文件名内不受支持的字符
 def sanitize_filename(filename):
@@ -161,13 +162,18 @@ def write_extended_subject_data(user_id,subject_id,token):
         f.write(f'<img src="{img_link}" alt="{subject_data.get("name_cn", "")}" style="max-width: 100%;">\n')
         f.flush()
 
-# 逐个写入条目
+# 依次写入多个条目
 def process_subject_ids(user_id, token):
+    existing_files = set(os.listdir())
     with open('subject_ids.txt', 'r', encoding='utf-8') as f:
         subject_ids = f.read().split(',')
     for count, subject_id in enumerate(subject_ids, start=1):
         subject_data = Bangumi.getsubject(subject_id,user_id)
-        name_cn = subject_data.get("name_cn", "default")
-        print(f"正在写入第{count}篇: {name_cn}")
+        print(f"正在写入第{count}篇: {subject_data.get('name_cn') or subject_data.get('name', 'default')}")
+        file_name = sanitize_filename(subject_data.get("name_cn") or subject_data.get("name", "default") + ".md")
+        if file_name in existing_files:
+            print(f"文件 {file_name} 已存在，跳过写入。")
+            continue
         write_extended_subject_data(user_id, subject_id, token)
+        existing_files.add(file_name)
         time.sleep(0.2)  # 防止请求过快

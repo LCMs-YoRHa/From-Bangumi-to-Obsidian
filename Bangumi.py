@@ -1,5 +1,7 @@
 import json
 import requests
+from requests import RequestException
+
 
 # 获取用户个人全部收藏条目id
 def get_all_collection_ids(user_id, token, subject_type=2, type=None, limit=30, offset=0):
@@ -48,7 +50,10 @@ def getsubjectpersons(subject_id,user_id):
         "User-Agent": f"{user_id}/my-private-project"
     }
     response = requests.get(url, headers=headers)
-    return json.loads(response.text)
+    if response.status_code == 200 and response.text.strip():
+        return json.loads(response.text)
+    else:
+        return []  # 如果响应无效，则返回一个空列表
 
 # 获取条目角色表
 def getsubjectcharacters(subject_id,user_id):
@@ -58,8 +63,13 @@ def getsubjectcharacters(subject_id,user_id):
         "User-Agent": f"{user_id}/my-private-project"
     }
     response = requests.get(url, headers=headers)
-    return json.loads(response.text)
-
+    try:
+        response = requests.get(url, headers=headers, timeout=10)
+        response.raise_for_status()
+        return json.loads(response.text)
+    except RequestException as e:
+        print("Connection error\:", e)
+        return []  # 如果响应无效，则返回一个空列表
 # 获取条目关联项目
 def getsubjectrelations(subject_id,user_id):
     url = 'https://api.bgm.tv/v0/subjects/' + str(subject_id) + '/subjects'
