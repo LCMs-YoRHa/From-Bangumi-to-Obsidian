@@ -56,7 +56,7 @@ def write_extended_subject_data(user_id,subject_id,token):
     version =subject_data.get("platform", "")
     score = subject_data.get("rating", {}).get("score", "")
     person_score = user_subject_data.get("rate", "")
-    summary = subject_data.get("summary", "")
+    summary = (subject_data.get("summary", "")).lstrip()
     img_link = subject_data.get("images", {}).get("large", "")
     broadcast_date = subject_data.get("date", "")
     watch_date= user_subject_data.get("updated_at", "")
@@ -72,7 +72,12 @@ def write_extended_subject_data(user_id,subject_id,token):
         4: "搁置",
         5: "抛弃"
     }
-    watch_status = status_mapping.get(user_subject_data.get("subject_type", 0), "未知")
+    watch_status = status_mapping.get(user_subject_data.get("type", 0), "未知")
+
+    if person_comment is not None:
+        person_comment = person_comment.replace("\n", "")
+    else:
+        person_comment = ""
 
     for entry in subject_data.get("infobox", []):
         k = entry.get("key", "")
@@ -102,6 +107,7 @@ def write_extended_subject_data(user_id,subject_id,token):
         f.write(f"观看状态: {watch_status}\n")
         f.write(f"收藏日期: {watch_date}\n")
         f.write(f"个人评论: {person_comment}\n")
+        f.write(f"封面链接: {img_link}\n")
         f.write(f"URL: https://bangumi.tv/subject/{subject_id}\n")
 
         f.write("---\n\n")
