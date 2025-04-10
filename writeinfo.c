@@ -38,48 +38,53 @@ char *creatfile(const char *collection_id) {
 }
 
 void writeinfo(const char *collection_id) {
-
-    // 创建要写入的各项变量,同时通过api获取对应值的值进行赋值
+    // 创建要写入的各项变量
     char *filename = creatfile(collection_id);
     char *summary = getinfo(collection_id, "subject.short_summary");
     printf("生成的文件名: %s\n", filename);
     printf("获取到的简介: %s\n", summary ? summary : "NULL");
-    // char *
 
-    // 开发期间用于测试：打印 summary 值,检测是否成功获取
-    // if (summary) {
-    //     printf("获取到的 summary: %s\n", summary);
-    // } else {
-    //     printf("未能获取到 summary 的值\n");
-    // }
+    // 转换为宽字符
+    int len = MultiByteToWideChar(CP_UTF8, 0, filename, -1, NULL, 0);
+    wchar_t *wname = (wchar_t*)malloc(len * sizeof(wchar_t));
+    MultiByteToWideChar(CP_UTF8, 0, filename, -1, wname, len);
 
-    // 写入文件
+    // 创建文件
+    HANDLE file = CreateFileW(wname, GENERIC_WRITE, 0, NULL,
+                            CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
-
-    FILE *file = fopen(filename, "w");
-    if (file == NULL) {
-        printf("无法创建文件 %s\n", filename);
+    if (file == INVALID_HANDLE_VALUE) {
+        printf("无法创建文件 %s (错误码: %lu)\n", filename, GetLastError());
         free(summary);
         free(filename);
+        free(wname);
         return;
     }
 
+    // UTF-8 BOM
+    const char bom[] = "\xEF\xBB\xBF";
+    DWORD bytes;
+    WriteFile(file, bom, sizeof(bom) - 1, &bytes, NULL);
 
-    // 设置文件为 UTF-8 编码
-    fprintf(file, "\xEF\xBB\xBF"); // 写入 UTF-8 BOM
+    // 写入标题
+    const char header[] = "# 简介\n\n";
+    WriteFile(file, header, sizeof(header) - 1, &bytes, NULL);
 
-    // 写入内容
+    // 写入简介
     if (summary) {
-        fprintf(file, "# 简介\n\n%s\n", summary);
+        WriteFile(file, summary, strlen(summary), &bytes, NULL);
+        WriteFile(file, "\n", 1, &bytes, NULL);
     } else {
-        fprintf(file, "# 简介\n\n暂无简介\n");
+        const char noSummary[] = "暂无简介\n";
+        WriteFile(file, noSummary, sizeof(noSummary) - 1, &bytes, NULL);
     }
 
-    fclose(file);
+    CloseHandle(file);
 
     printf("文件 %s 已成功创建\n", filename);
     free(summary);
     free(filename);
+    free(wname);
 }
 
 //
