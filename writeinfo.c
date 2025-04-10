@@ -46,45 +46,36 @@ void writeinfo(const char *collection_id) {
 
     // 转换为宽字符
     int len = MultiByteToWideChar(CP_UTF8, 0, filename, -1, NULL, 0);
-    wchar_t *wname = (wchar_t*)malloc(len * sizeof(wchar_t));
+    wchar_t wname[256];
     MultiByteToWideChar(CP_UTF8, 0, filename, -1, wname, len);
 
-    // 创建文件
-    HANDLE file = CreateFileW(wname, GENERIC_WRITE, 0, NULL,
-                            CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-
-    if (file == INVALID_HANDLE_VALUE) {
-        printf("无法创建文件 %s (错误码: %lu)\n", filename, GetLastError());
+    // 使用宽字符版本的 fopen
+    FILE *file = _wfopen(wname, L"wb");
+    if (file == NULL) {
+        printf("无法创建文件 %s\n", filename);
         free(summary);
         free(filename);
-        free(wname);
         return;
     }
 
     // UTF-8 BOM
     const char bom[] = "\xEF\xBB\xBF";
-    DWORD bytes;
-    WriteFile(file, bom, sizeof(bom) - 1, &bytes, NULL);
+    fwrite(bom, 1, 3, file);
 
     // 写入标题
-    const char header[] = "# 简介\n\n";
-    WriteFile(file, header, sizeof(header) - 1, &bytes, NULL);
+    fprintf(file, "# 简介\n\n");
 
     // 写入简介
     if (summary) {
-        WriteFile(file, summary, strlen(summary), &bytes, NULL);
-        WriteFile(file, "\n", 1, &bytes, NULL);
+        fprintf(file, "%s\n", summary);
     } else {
-        const char noSummary[] = "暂无简介\n";
-        WriteFile(file, noSummary, sizeof(noSummary) - 1, &bytes, NULL);
+        fprintf(file, "暂无简介\n");
     }
 
-    CloseHandle(file);
-
+    fclose(file);
     printf("文件 %s 已成功创建\n", filename);
     free(summary);
     free(filename);
-    free(wname);
 }
 
 //
