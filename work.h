@@ -27,6 +27,7 @@ void menu3();
 
 // 文件操作函数
 void readcerts();
+char *creatfile(const char *collection_id);
 void writeinfo(const char *collection_id);
 
 // 通过api获取数据的函数

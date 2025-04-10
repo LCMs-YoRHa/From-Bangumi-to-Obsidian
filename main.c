@@ -12,6 +12,6 @@ int main() {
     readcerts();
     // menu();
     // getinfo("260619", "subject.short_summary");
-    writeinfo("260619");
+    writeinfo("391496");
     return 0;
 }
