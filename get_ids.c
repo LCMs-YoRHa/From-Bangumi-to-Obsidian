@@ -17,19 +17,23 @@ void get_ids() {
 
     // 解析返回到的JSON数据
     cJSON *json = cJSON_Parse(response);
-    if (json == NULL) {
-        printf("解析 JSON 数据失败\n");
-        free(response);
-        return;
-    }
+
+    // 调试用
+    // if (json == NULL) {
+    //     printf("解析 JSON 数据失败\n");
+    //     free(response);
+    //     return;
+    // }
 
     cJSON *data = cJSON_GetObjectItem(json, "data");
-    if (!cJSON_IsArray(data)) {
-        printf("JSON 数据格式错误\n");
-        cJSON_Delete(json);
-        free(response);
-        return;
-    }
+
+    // 调试用
+    // if (!cJSON_IsArray(data)) {
+    //     printf("JSON 数据格式错误\n");
+    //     cJSON_Delete(json);
+    //     free(response);
+    //     return;
+    // }
 
     // 写入文件
     FILE *file = fopen("ids.txt", "w");
