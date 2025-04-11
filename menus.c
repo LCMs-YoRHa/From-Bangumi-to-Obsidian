@@ -48,6 +48,7 @@ void menu1()
     char c;
     system("cls");    //清屏
     printf("正在导出中........\n");
+    get_ids();
     printf("是否通过id进行全部导出?(y/n):\n");
     while (1)
     {
@@ -58,7 +59,8 @@ void menu1()
         }
         if (c == 'y' || c == 'Y')
         {
-            // getinfo();
+            readids();
+            menu();
             break;
         }
         else if (c == 'n' || c == 'N')
@@ -76,7 +78,7 @@ void menu1()
 
 void menu2()
 {
-    char input[100];
+    char input[20];
     system("cls");
     printf("请输入条目id(输入q退出):\n");
     while (1)
@@ -99,7 +101,7 @@ void menu2()
             if (id > 0) // 检查是否为有效的正整数
             {
                 printf("条目id: %d\n", id);
-                // writeinfo(id);
+                writeinfo(id);
                 menu2();
                 break;
             }
@@ -131,11 +133,13 @@ void menu3()
         switch (choice)
         {
             case 1:
-                // getinfo();
+                readids();
+                menu();
                 break;
             case 2:
-                // get_ids();
-                // getinfo();
+                get_ids();
+                readids();
+                menu();
                 break;
             case 3:
                 printf("正在回退....\n");

@@ -12,8 +12,8 @@ void get_ids() {
         return;
     }
 
-    // (调试)打印 API 响应
-    printf("API 响应: %s\n", response);
+    // (调试用)打印 API 响应
+    // printf("API 响应: %s\n", response);
 
     // 解析返回到的JSON数据
     cJSON *json = cJSON_Parse(response);
@@ -38,7 +38,7 @@ void get_ids() {
     // 写入文件
     FILE *file = fopen("ids.txt", "w");
     if (file == NULL) {
-        printf("无法打开文件 ids.txt\n");
+        printf("无法创建文件 ids.txt\n");
         cJSON_Delete(json);
         free(response);
         return;

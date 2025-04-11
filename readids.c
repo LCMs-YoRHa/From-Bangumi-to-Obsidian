@@ -3,8 +3,10 @@
 void readids() {
     FILE *file = fopen("ids.txt", "r");
     if (file == NULL) {
-        printf("无法读取文件 'ids.txt'，请确保文件存在并具备读取权限。\n");
-        return;
+        printf("未读取到文件 'ids.txt'，请确保已执行前一步选项1且具备读取权限。\n");
+        printf("请按任意键返回...。");
+        getchar();
+        return menu3();
     }
 
     // 读取读取 ID并导出条目
@@ -14,6 +16,7 @@ void readids() {
         // sprintf(id_str, "%d", id);  // 将整数转换为字符串
         writeinfo(id);
     }
+    printf("已全部写入!\n");
     fclose(file);
 }
 
