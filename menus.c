@@ -133,10 +133,12 @@ void menu3()
         switch (choice)
         {
             case 1:
+                system("cls");
                 readids();
                 menu();
                 break;
             case 2:
+                system("cls");
                 get_ids();
                 readids();
                 menu();

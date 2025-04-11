@@ -3,15 +3,15 @@
 char auth_header[256];
 char user_agent[256];
 
-// 申请内存
+// 申请内存函数
 void init_memory(MemoryStruct *chunk) {
-    chunk->memory = malloc(1);
-    chunk->size = 0;
+    chunk->memory = malloc(1);  // 分配内存
+    chunk->size = 0;         // 初始化大小
 }
 
 // 释放内存
 void free_memory(MemoryStruct *chunk) {
-    free(chunk->memory);
+    free(chunk->memory);  // 释放内存
 }
 
 // cURL 回调

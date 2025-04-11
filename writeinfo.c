@@ -83,7 +83,10 @@ void writeinfo(const int *collection_id) {
     fprintf(file, "\n## 剧情梗概:\n%s\n", getinfo(collection_id, "subject.short_summary"));
     fprintf(file, "\n---\n");
     fprintf(file, "\n![](%s)\n", getinfo(collection_id, "subject.images.large"));
+
+    // 关闭文件
     fclose(file);
+
     printf("文件 %s 已成功创建\n", filename);
     free(filename);
 }

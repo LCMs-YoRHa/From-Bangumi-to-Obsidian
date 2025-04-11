@@ -1,9 +1,10 @@
 #include "work.h"
 
-// 递归解析嵌套字段
+// 递归解析需要嵌套的字段
 cJSON *get_nested_field(cJSON *json, const char *field_path) {
     char path[256];
     strncpy(path, field_path, sizeof(path) - 1);
+    // 确保字符串以空字符结尾
     path[sizeof(path) - 1] = '\0';
 
     char *token = strtok(path, ".");
@@ -20,22 +21,28 @@ cJSON *get_nested_field(cJSON *json, const char *field_path) {
 // 获取收藏条目信息并返回字段值
 char *getinfo(const int *collection_id, const char *field_path) {
     char url[256];
-    snprintf(url, sizeof(url), "https://api.bgm.tv/v0/users/%s/collections/%d", username, collection_id);
+    // 将格式化的url写入指定的字符数组(插入需要请求的api)
+    sprintf(url, "https://api.bgm.tv/v0/users/%s/collections/%d", username, collection_id);
+    // 调用http_get函数获取收藏条目信息
+    char *response = http_get(url);
 
     // 调试用
-    char *response = http_get(url);
-    // if (response == NULL) {
-    //     printf("获取收藏条目信息失败\n");
-    //     return NULL;
-    // }
-    //
-    cJSON *json = cJSON_Parse(response);
-    // free(response);
-    // if (json == NULL) {
-    //     printf("解析 JSON 数据失败\n");
-    //     return NULL;
-    // }
+    /*if (response == NULL) {
+        printf("获取收藏条目信息失败\n");
+        return NULL;
+    }*/
 
+    // 解析JSON数据
+    cJSON *json = cJSON_Parse(response);
+
+    //调试用
+    /*free(response);
+    if (json == NULL) {
+        printf("解析 JSON 数据失败\n");
+        return NULL;
+    }*/
+
+    // 获取字段值
     cJSON *field = get_nested_field(json, field_path);
     char *result = NULL;
 
@@ -58,6 +65,8 @@ char *getinfo(const int *collection_id, const char *field_path) {
 
     // 释放JSON内存
     cJSON_Delete(json);
+
+    // 若字段值不为空，则返回字段值，否则返回"暂无"
     if (result != NULL)
         return result;
     return "暂无";

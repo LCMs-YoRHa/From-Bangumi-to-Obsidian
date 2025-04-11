@@ -14,9 +14,10 @@ extern char token[100];
 extern char auth_header[256];
 extern char user_agent[256];
 
+// 定义一个结构体用于存储内存数据
 typedef struct {
-    char *memory;
-    size_t size;
+    char *memory;   // 指向一个内存块的指针
+    size_t size;    //记录 memory 指向的内存块的大小
 } MemoryStruct;
 
 // 菜单函数
