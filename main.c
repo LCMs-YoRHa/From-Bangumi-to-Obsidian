@@ -10,9 +10,10 @@ int main() {
 
     // 读取并生成凭证
     readcerts();
-    // readids();
+    // get_ids();
+    readids();
     // menu();
     // getinfo("260619", "subject.short_summary");
-    writeinfo("383308");
+    // writeinfo(383308);
     return 0;
 }

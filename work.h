@@ -28,12 +28,12 @@ void menu3();
 // 文件操作函数
 void readcerts();
 void readids();
-char *creatfile(const char *collection_id);
-void writeinfo(const char *collection_id);
+char *creatfile(const int *collection_id);
+void writeinfo(const int *collection_id);
 
 // 通过api获取数据的函数
 void get_ids();
-char *getinfo(const char *collection_id, const char *field_path);
+char *getinfo(const int *collection_id, const char *field_path);
 
 // http请求的一系列函数
 void init_memory(MemoryStruct *chunk);

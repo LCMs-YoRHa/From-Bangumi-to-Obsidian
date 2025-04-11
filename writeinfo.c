@@ -12,7 +12,7 @@ void sanitize_filename(char *filename) {
 }
 
 // 获取文件名
-char *creatfile(const char *collection_id) {
+char *creatfile(const int *collection_id) {
     char filename[256];
     char *name_cn = getinfo(collection_id, "subject.name_cn");
     char *name = NULL;
@@ -39,7 +39,7 @@ char *creatfile(const char *collection_id) {
 }
 
 // 开始写入信息
-void writeinfo(const char *collection_id) {
+void writeinfo(const int *collection_id) {
     // 创建要写入的各项变量
     char *filename = creatfile(collection_id);
     // 打印调试信息,判断BUg

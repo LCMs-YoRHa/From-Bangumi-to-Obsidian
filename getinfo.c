@@ -18,9 +18,9 @@ cJSON *get_nested_field(cJSON *json, const char *field_path) {
 }
 
 // 获取收藏条目信息并返回字段值
-char *getinfo(const char *collection_id, const char *field_path) {
+char *getinfo(const int *collection_id, const char *field_path) {
     char url[256];
-    snprintf(url, sizeof(url), "https://api.bgm.tv/v0/users/%s/collections/%s", username, collection_id);
+    snprintf(url, sizeof(url), "https://api.bgm.tv/v0/users/%s/collections/%d", username, collection_id);
 
     // 调试用
     char *response = http_get(url);
