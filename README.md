@@ -1,26 +1,69 @@
-开发环境:Clion
-Cmake
-编译器:mingw64
-运行环境:Windows
+## 前言
 
-使用的第三方库:CJson,curl
+- ### 开发目的
 
-main.c(主函数)
+  搭建本地的影视知识库
 
-work.h(头文件)
+- ### 前置知识
 
-menus.c(菜单)
+  - #### markdown文件:
 
-readcert.c(读取用户凭证,生成请求头)
+    一种类似于word文档的文件格式，采用轻量级标记语言，文件名的末尾是.md，使用特有语法可以通过类似编程的方式对内容进行排版。
 
-test.c(测试使用)
+  - #### JSON:
+  
+    是一种在各个编程语言中流通的数据格式，负责不同编程语言中的数据传递和交互。其格式类似于python中的字典（key:value）。
 
-get_ids.c(从服务器通过调用api获取条目id并写入ids.txt)
+## 开发环境
 
-http.c (http处理请求的一系列函数)
+- ### IDE：CLion（Jetbrain）
 
-readids.cpp (读取用户id,准备逐条请求api查询)
 
-getinfo.c(获取特定id的特定信息)
+- ### 编译器:mingw64
 
-CMakeLists(运行Cmake所用的配置文件)
+
+- ### 使用的第三方库:CJson（解析json内容）,curl（http请求）
+
+
+## 各文件功能说明
+
+- ### work.h(头文件)
+
+  引入标准库头文件、第三方库，声明全局变量，定义结构体，函数说明。
+
+- ### main.c(主函数)
+
+  程序执行主函数，通过调用其他函数来实现。
+
+- ### menus.c(菜单)
+
+  包含主菜单，各子级菜单的定义，以及对应的操作。
+
+- ### readcert.c(读取用户凭证,生成请求头)
+
+  通过读取用户在本地自己创建的certs.txt文件内的值，获取用户名和token（用户认证凭证），进而生成Http请求中需要包括的请求头。
+
+- ### ~~test.c(测试使用)~~
+
+
+- ### get_ids.c(获取收藏条目ids)
+
+  通过api获取用户收藏的条目id，并写入ids.txt文件中。
+
+- ### http.c (http处理请求的一系列函数)
+
+  http请求时的一系列函数
+
+- ### readids.c (读取收藏条目ids)
+
+  读取本地的ids.txt中的id
+
+- ### getinfo.c(获取特定id条目的特定信息)
+
+  通过api，获取特定条目（id）中的特定信息。
+
+- ### writeinfo.c（写入信息）
+
+  将获取到的信息写入文件中
+
+- ### CMakeLists(运行Cmake构建工具所用的配置文件)
