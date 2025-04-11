@@ -39,10 +39,11 @@ char *http_get(const char *url) {
     CURLcode res;
     MemoryStruct chunk;
 
-    init_memory(&chunk);
-    curl_global_init(CURL_GLOBAL_ALL);
-    curl = curl_easy_init();
+    init_memory(&chunk);    //初始化内存
+    curl_global_init(CURL_GLOBAL_ALL);      // 初始化全局变量
+    curl = curl_easy_init();    // 初始化cURL句柄
 
+    // 设置请求头
     if (curl) {
         struct curl_slist *headers = NULL;
         headers = curl_slist_append(headers, "accept: application/json");
@@ -54,6 +55,7 @@ char *http_get(const char *url) {
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
 
+        // 发送请求
         res = curl_easy_perform(curl);
         if (res != CURLE_OK) {
             fprintf(stderr, "cURL 请求失败: %s\n", curl_easy_strerror(res));
@@ -63,10 +65,12 @@ char *http_get(const char *url) {
             return NULL;
         }
 
+        // 释放内存和清理cURL
         curl_slist_free_all(headers);
         curl_easy_cleanup(curl);
     }
 
+    // 结束curl
     curl_global_cleanup();
     return chunk.memory;
 }

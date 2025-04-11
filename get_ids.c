@@ -1,19 +1,21 @@
+// 获取收藏条目 ID 并写入文件
 #include "work.h"
 
-// 获取收藏条目 ID 并写入文件
 void get_ids() {
     char url[256];
-    snprintf(url, sizeof(url), "https://api.bgm.tv/v0/users/%s/collections?subject_type=2&type=2&limit=50&offset=0", username);
+    snprintf(url, sizeof(url), "https://api.bgm.tv/v0/users/%s/collections?subject_type=2&type=2&limit=50&offset=0", username);     //插入api调用url
 
+    // 调用API
     char *response = http_get(url);
     if (response == NULL) {
-        printf("获取id数据失败\n");
+        printf("获取id数据失败/没有条目数据\n");
         return;
     }
 
-    // 打印 API 响应
+    // (调试)打印 API 响应
     printf("API 响应: %s\n", response);
 
+    // 解析返回到的JSON数据
     cJSON *json = cJSON_Parse(response);
     if (json == NULL) {
         printf("解析 JSON 数据失败\n");
@@ -29,6 +31,7 @@ void get_ids() {
         return;
     }
 
+    // 写入文件
     FILE *file = fopen("ids.txt", "w");
     if (file == NULL) {
         printf("无法打开文件 ids.txt\n");
@@ -46,8 +49,9 @@ void get_ids() {
     }
 
     fclose(file);
-    printf("ID 已成功写入 ids.txt\n");
+    printf("ID 已成功导出至 ids.txt\n");
 
+    // 释放内存和JSON数据
     cJSON_Delete(json);
     free(response);
 }

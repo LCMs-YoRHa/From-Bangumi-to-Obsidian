@@ -3,6 +3,7 @@
 // 主菜单
 void menu()
 {
+    system("cls");
     int choice;
     while (1)
     {
@@ -46,9 +47,11 @@ void menu()
 void menu1()
 {
     char c;
+    system("cls");    //清屏
+    printf("正在导出中........\n");
+    printf("是否通过id进行全部导出?(y/n):\n");
     while (1)
     {
-        printf("是否通过id进行全部导出?(y/n):\n");
         if (scanf(" %c", &c) != 1) {
             printf("输入无效，请输入y或n:\n");
             while (getchar() != '\n'); // 清空输入缓冲区
@@ -77,9 +80,10 @@ void menu1()
 void menu2()
 {
     char input[100];
+    system("cls");
+    printf("请输入条目id(输入q退出):\n");
     while (1)
     {
-        printf("请输入条目id(输入q退出):\n");
         if (scanf("%99s", input) != 1) {
             printf("输入无效，请重新输入:\n");
             while (getchar() != '\n'); // 清空输入缓冲区
@@ -94,7 +98,7 @@ void menu2()
         }
         else
         {
-            int id = atoi(input);
+            int id = atoi(input);    //将字符串转换为整数
             if (id > 0) // 检查是否为有效的正整数
             {
                 printf("条目id: %d\n", id);
@@ -111,13 +115,14 @@ void menu2()
 
 void menu3()
 {
+    system("cls");
+    int choice;
+    printf("1. 从本地ids.txt中导出(需已经执行前一步选项1)\n");
+    printf("2. 从服务器获取全部ids并直接导出\n");
+    printf("3. 回退\n");
+    printf("请输入你的选择：");
     while (1)
     {
-        int choice;
-        printf("1. 从本地ids.txt中导出(需已经执行前一步选项1)\n");
-        printf("2. 从服务器获取全部ids并直接导出\n");
-        printf("3. 回退\n");
-        printf("请输入你的选择：");
         if (scanf("%d", &choice) != 1) {
             printf("输入无效，请输入数字(1-3):\n");
             while (getchar() != '\n'); // 清空输入缓冲区

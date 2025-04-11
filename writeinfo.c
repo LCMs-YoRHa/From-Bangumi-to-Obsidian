@@ -11,6 +11,7 @@ void sanitize_filename(char *filename) {
     }
 }
 
+// 获取文件名
 char *creatfile(const char *collection_id) {
     char filename[256];
     char *name_cn = getinfo(collection_id, "subject.name_cn");
@@ -37,12 +38,15 @@ char *creatfile(const char *collection_id) {
     return strdup(filename);
 }
 
+// 开始写入信息
 void writeinfo(const char *collection_id) {
     // 创建要写入的各项变量
     char *filename = creatfile(collection_id);
-    char *summary = getinfo(collection_id, "subject.short_summary");
-    printf("生成的文件名: %s\n", filename);
-    printf("获取到的简介: %s\n", summary ? summary : "NULL");
+    // 打印调试信息,判断BUg
+    // printf("生成的文件名: %s\n", filename);
+    // printf("获取到的简介: %s\n", summary ? summary : "NULL");
+    // printf("获取到的集数: %s\n", eps ? eps : "NULL");
+    // printf("获取到的url: %s\n", image_url ? image_url : "NULL");
 
     // 转换为宽字符
     int len = MultiByteToWideChar(CP_UTF8, 0, filename, -1, NULL, 0);
@@ -53,9 +57,10 @@ void writeinfo(const char *collection_id) {
     FILE *file = _wfopen(wname, L"wb");
     if (file == NULL) {
         printf("无法创建文件 %s\n", filename);
-        free(summary);
         free(filename);
         return;
+    }else {
+        printf("正在写入:%s\n", filename);
     }
 
     // UTF-8 BOM
@@ -66,15 +71,20 @@ void writeinfo(const char *collection_id) {
     fprintf(file, "# 简介\n\n");
 
     // 写入简介
-    if (summary) {
-        fprintf(file, "%s\n", summary);
-    } else {
-        fprintf(file, "暂无简介\n");
-    }
-
+    fprintf(file, "\n---\n");
+    fprintf(file, "\n原名:%s\n",getinfo(collection_id,"subject.name"));
+    fprintf(file, "\n话数:%s\n",getinfo(collection_id,"subject.eps"));
+    fprintf(file, "\n版本:%s\n",getinfo(collection_id,"subject.subject_type"));
+    fprintf(file, "\n收录评分:%s\n",getinfo(collection_id,"subject.score"));
+    fprintf(file, "\n放送开始:%s\n",getinfo(collection_id,"subject.date"));
+    fprintf(file, "\n收藏日期:%s\n",getinfo(collection_id,"updated_at"));
+    fprintf(file, "\n封面链接:%s\n", getinfo(collection_id,"subject.images.large"));
+    fprintf(file, "\n---\n");
+    fprintf(file, "\n## 剧情梗概:\n%s\n", getinfo(collection_id, "subject.short_summary"));
+    fprintf(file, "\n---\n");
+    fprintf(file, "\n![](%s)\n", getinfo(collection_id, "subject.images.large"));
     fclose(file);
     printf("文件 %s 已成功创建\n", filename);
-    free(summary);
     free(filename);
 }
 
