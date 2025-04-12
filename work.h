@@ -42,9 +42,6 @@ void free_memory(MemoryStruct *chunk);
 size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp);
 char *http_get(const char *url);
 
-// 测试函数
-void test(char *, char *);
-
 #endif//WORK_H
 
 //

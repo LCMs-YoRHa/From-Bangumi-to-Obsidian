@@ -1,11 +1,12 @@
 #include "work.h"
 
+// 定义全局变量
 char auth_header[256];
 char user_agent[256];
 
 // 申请内存函数
 void init_memory(MemoryStruct *chunk) {
-    chunk->memory = malloc(1);  // 分配内存
+    chunk->memory = malloc(1);  // malloc函数分配内存
     chunk->size = 0;         // 初始化大小
 }
 
@@ -19,13 +20,7 @@ size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp) {
     size_t realsize = size * nmemb;
     MemoryStruct *mem = (MemoryStruct *)userp;
 
-    char *ptr = realloc(mem->memory, mem->size + realsize + 1);
-    if (ptr == NULL) {
-        printf("内存分配失败\n");
-        return 0;
-    }
-
-    mem->memory = ptr;
+    mem->memory = realloc(mem->memory, mem->size + realsize + 1);
     memcpy(&(mem->memory[mem->size]), contents, realsize);
     mem->size += realsize;
     mem->memory[mem->size] = 0;
@@ -43,7 +38,7 @@ char *http_get(const char *url) {
     curl_global_init(CURL_GLOBAL_ALL);      // 初始化全局变量
     curl = curl_easy_init();    // 初始化cURL句柄
 
-    // 设置请求头
+    // 构造请求头
     if (curl) {
         struct curl_slist *headers = NULL;
         headers = curl_slist_append(headers, "accept: application/json");

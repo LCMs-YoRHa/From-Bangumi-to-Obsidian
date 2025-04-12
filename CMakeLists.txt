@@ -13,7 +13,6 @@ add_executable(WORK main.c
         work.h
         menus.c
         readcert.c
-        test.c
         get_ids.c
         http.c
         readids.c
