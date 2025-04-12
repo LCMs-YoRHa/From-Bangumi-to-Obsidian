@@ -19,8 +19,7 @@ void menu()
         if (scanf("%d", &choice) != 1)
         { // 判断输入是否为整数
             printf("请输入正确的选项(1-4): ");
-            while (getchar() != '\n')
-                ; // 清空输入缓冲区,否则会导致死循环
+            while (getchar() != '\n'); // 清空输入缓冲区,否则会导致死循环
             continue;
         }
         else

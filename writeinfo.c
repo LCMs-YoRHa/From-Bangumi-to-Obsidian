@@ -7,9 +7,7 @@ void sanitize_filename(char *filename)
     while (*filename)
     {
         if (strchr(illegal_chars, *filename))
-        {
             *filename = '_';
-        }
         filename++;
     }
 }
@@ -22,14 +20,9 @@ char *creatfile(const int *collection_id)
     char *name_cn = getinfo(collection_id, "subject.name_cn");
 
     if (strlen(name_cn) == 0)
-    {
-
         final_name = getinfo(collection_id, "subject.name");
-    }
     else
-    {
         final_name = getinfo(collection_id, "subject.name_cn");
-    }
 
     snprintf(filename, sizeof(filename), "%s.md", final_name);
     sanitize_filename(filename);
@@ -57,9 +50,7 @@ void writeinfo(const int *collection_id)
         return;
     }
     else
-    {
         printf("正在写入:%s\n", filename);
-    }
 
     // 写入简介
     fprintf(file, "# 简介\n\n");

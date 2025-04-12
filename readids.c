@@ -14,9 +14,7 @@ void readids()
     // 读取读取 ID并导出条目
     int id;
     while (fscanf(file, "%d", &id) == 1)
-    {
         writeinfo(id);
-    }
     fclose(file);
     printf("已全部写入!\n");
 }

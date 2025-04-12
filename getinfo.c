@@ -36,23 +36,17 @@ char *getinfo(const int *collection_id, const char *field_path)
     if (field != NULL)
     {
         if (cJSON_IsString(field))
-        {
             result = strdup(field->valuestring); // 复制字符串值
-        }
         else if (cJSON_IsNumber(field))
         {
             // 处理数字类型
             char buffer[32];
             if (field->valuedouble == (double)(int)field->valuedouble)
-            {
                 // 整数
                 snprintf(buffer, sizeof(buffer), "%d", field->valueint);
-            }
             else
-            {
                 // 浮点数
                 snprintf(buffer, sizeof(buffer), "%f", field->valuedouble);
-            }
             result = strdup(buffer);
         }
     }
