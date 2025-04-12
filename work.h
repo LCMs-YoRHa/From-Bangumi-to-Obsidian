@@ -15,9 +15,10 @@ extern char auth_header[256];
 extern char user_agent[256];
 
 // 定义一个结构体用于存储内存数据
-typedef struct {
-    char *memory;   // 指向一个内存块的指针
-    size_t size;    //记录 memory 指向的内存块的大小
+typedef struct
+{
+    char *memory; // 指向一个内存块的指针
+    size_t size;  // 记录 memory 指向的内存块的大小
 } MemoryStruct;
 
 // 菜单函数
@@ -42,9 +43,8 @@ void free_memory(MemoryStruct *chunk);
 size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp);
 char *http_get(const char *url);
 
-#endif//WORK_H
+#endif // WORK_H
 
 //
 // Created by 18212 on 25-4-9.
 //
-

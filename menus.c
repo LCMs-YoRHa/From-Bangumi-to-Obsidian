@@ -4,7 +4,7 @@
 void menu()
 {
     int choice;
-    system("cls");      //清屏
+    system("cls"); // 清屏
     printf("---------欢迎使用笔记生成工具---------\n");
     printf("使用前请先确保文件目录下创建了'crts.txt'文件并正确配置了用户名和token\n");
     printf("=================================\n");
@@ -16,28 +16,30 @@ void menu()
     printf("请输入你的选择：");
     while (1)
     {
-        if (scanf("%d", &choice) != 1) {        // 判断输入是否为整数
+        if (scanf("%d", &choice) != 1)
+        { // 判断输入是否为整数
             printf("请输入正确的选项(1-4): ");
-            while (getchar() != '\n');     // 清空输入缓冲区,否则会导致死循环
+            while (getchar() != '\n')
+                ; // 清空输入缓冲区,否则会导致死循环
             continue;
         }
         else
             switch (choice)
             {
-                case 1:
-                    menu1();
-                    break;
-                case 2:
-                    menu2();
-                    break;
-                case 3:
-                    menu3();
-                    break;
-                case 4:
-                    printf("正在退出程序....\n");
-                    exit(0);
-                default:
-                    printf("请输入正确的选项(1-4): ");
+            case 1:
+                menu1();
+                break;
+            case 2:
+                menu2();
+                break;
+            case 3:
+                menu3();
+                break;
+            case 4:
+                printf("正在退出程序....\n");
+                exit(0);
+            default:
+                printf("请输入正确的选项(1-4): ");
             }
     }
 }
@@ -45,7 +47,7 @@ void menu()
 void menu1()
 {
     char c;
-    system("cls");    //清屏
+    system("cls"); // 清屏
     printf("正在导出中........\n");
     get_ids();
     printf("是否通过id进行全部导出?(y/n):\n");
@@ -66,7 +68,7 @@ void menu1()
         }
         else
         {
-            system("cls");      //清屏
+            system("cls"); // 清屏
             printf("请输入正确的选项(y/n):\n");
         }
     }
@@ -75,13 +77,15 @@ void menu1()
 void menu2()
 {
     char input[20];
-    system("cls");      //清屏
+    system("cls"); // 清屏
     printf("请输入条目id(输入q退出):\n");
     while (1)
     {
-        if (scanf("%99s", input) != 1) {        // 判断输入是否为字符串
+        if (scanf("%99s", input) != 1)
+        { // 判断输入是否为字符串
             printf("输入无效，请重新输入: ");
-            while (getchar() != '\n');                // 清空输入缓冲区,否则会导致死循环
+            while (getchar() != '\n')
+                ; // 清空输入缓冲区,否则会导致死循环
             continue;
         }
 
@@ -93,8 +97,8 @@ void menu2()
         }
         else
         {
-            int id = atoi(input);                     //将字符串转换为整数
-            if (id > 0)                               // 检查是否为有效的正整数
+            int id = atoi(input); // 将字符串转换为整数
+            if (id > 0)           // 检查是否为有效的正整数
             {
                 printf("条目id: %d\n", id);
                 writeinfo(id);
@@ -117,35 +121,35 @@ void menu3()
     printf("请输入你的选择：");
     while (1)
     {
-        if (scanf("%d", &choice) != 1) {
+        if (scanf("%d", &choice) != 1)
+        {
             printf("输入无效，请输入数字(1-3): ");
-            while (getchar() != '\n');             // 清空输入缓冲区,否则会导致死循环
+            while (getchar() != '\n')
+                ; // 清空输入缓冲区,否则会导致死循环
             continue;
         }
         switch (choice)
         {
-            case 1:
-                system("cls");
-                readids();
-                menu();
-                break;
-            case 2:
-                system("cls");
-                get_ids();
-                readids();
-                menu();
-                break;
-            case 3:
-                printf("正在回退....\n");
-                menu();
-                return;
-            default:
-                printf("请输入正确的选项(1-3): ");
+        case 1:
+            system("cls");
+            readids();
+            menu();
+            break;
+        case 2:
+            system("cls");
+            get_ids();
+            readids();
+            menu();
+            break;
+        case 3:
+            printf("正在回退....\n");
+            menu();
+            return;
+        default:
+            printf("请输入正确的选项(1-3): ");
         }
     }
 }
-
-
 
 //
 // Created by 18212 on 25-4-9.
