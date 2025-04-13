@@ -3,10 +3,10 @@
 // 过滤非法字符
 void sanitize_filename(char *filename)
 {
-    char *illegal_chars = "\\/:*?\"<>|";
+    char *illegal_chars = "\\/:*?\"<>|";    // 列出常见的文件名中的非法字符
     while (*filename)
     {
-        if (strchr(illegal_chars, *filename))
+        if (strchr(illegal_chars, *filename))   // 如果当前字符是非法字符，则替换为下划线
             *filename = '_';
         filename++;
     }
@@ -16,17 +16,17 @@ void sanitize_filename(char *filename)
 char *creatfile(const int *collection_id)
 {
     char filename[256];
-    const char *final_name = "unknown";
-    char *name_cn = getinfo(collection_id, "subject.name_cn");
-
+    const char *final_name = "unknown";// 默认文件名为unknown
+    char *name_cn = getinfo(collection_id, "subject.name_cn"); // 获取中文名
+    // 如果中文名为空，则使用原名, 否则使用中文名
     if (strlen(name_cn) == 0)
         final_name = getinfo(collection_id, "subject.name");
     else
         final_name = getinfo(collection_id, "subject.name_cn");
 
-    snprintf(filename, sizeof(filename), "%s.md", final_name);
-    sanitize_filename(filename);
-    return strdup(filename);
+    snprintf(filename, sizeof(filename), "%s.md", final_name);// 创建最终文件名
+    sanitize_filename(filename);// 过滤非法字符
+    return strdup(filename);//返回动态动态内存分配的字符串
 }
 
 // 开始写入信息
@@ -38,8 +38,8 @@ void writeinfo(const int *collection_id)
 
     // 转换为宽字符, 否则会出现乱码
     int len = MultiByteToWideChar(CP_UTF8, 0, filename, -1, NULL, 0);
-    wchar_t wname[256];
-    MultiByteToWideChar(CP_UTF8, 0, filename, -1, wname, len);
+    wchar_t wname[256];// 创建宽字符数组
+    MultiByteToWideChar(CP_UTF8, 0, filename, -1, wname, len);// 将宽字符数组转换为多字节字符数组
 
     // 使用宽字符版本的 fopen,否则会出现乱码
     FILE *file = _wfopen(wname, L"wb");

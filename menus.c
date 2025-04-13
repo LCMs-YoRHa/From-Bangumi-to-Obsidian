@@ -21,7 +21,7 @@ void menu()
             printf("请输入正确的选项(1-4): ");
             while (getchar() != '\n')
                 ; // 清空输入缓冲区,否则会导致死循环
-            continue;
+            continue;// 如果输入不是整数，则清空输入缓冲区并重新输入
         }
         else
             switch (choice)

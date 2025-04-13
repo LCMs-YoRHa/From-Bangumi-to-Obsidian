@@ -20,23 +20,23 @@ void free_memory(MemoryStruct *chunk)
 // cURL 回调
 size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp)
 {
-    size_t realsize = size * nmemb;
-    MemoryStruct *mem = (MemoryStruct *)userp;
+    size_t realsize = size * nmemb;// 计算实际大小
+    MemoryStruct *mem = (MemoryStruct *)userp;// 获取定义的内存结构体
 
-    mem->memory = realloc(mem->memory, mem->size + realsize + 1);
-    memcpy(&(mem->memory[mem->size]), contents, realsize);
-    mem->size += realsize;
-    mem->memory[mem->size] = 0;
+    mem->memory = realloc(mem->memory, mem->size + realsize + 1);// 重新分配内存
+    memcpy(&(mem->memory[mem->size]), contents, realsize);// 将内容复制到内存中
+    mem->size += realsize;// 更新内存大小
+    mem->memory[mem->size] = 0;// 设置字符串结尾为0
 
-    return realsize;
+    return realsize;// 返回实际大小
 }
 
 // 通用 HTTP GET 请求
 char *http_get(const char *url)
 {
-    CURL *curl;
-    CURLcode res;
-    MemoryStruct chunk;
+    CURL *curl;// 声明cURL句柄
+    CURLcode res;// cURL返回值
+    MemoryStruct chunk;// 定义内存结构体
 
     init_memory(&chunk);               // 初始化内存
     curl_global_init(CURL_GLOBAL_ALL); // 初始化全局变量
@@ -45,24 +45,22 @@ char *http_get(const char *url)
     // 构造请求头
     if (curl)
     {
-        struct curl_slist *headers = NULL;
+        struct curl_slist *headers = NULL;// 定义请求头
         headers = curl_slist_append(headers, "accept: application/json");
         headers = curl_slist_append(headers, auth_header);
         headers = curl_slist_append(headers, user_agent);
 
-        curl_easy_setopt(curl, CURLOPT_URL, url);
-        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
+        curl_easy_setopt(curl, CURLOPT_URL, url);// 设置URL
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);// 设置请求头
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);// 设置回调函数和用户数据
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
-
-        // 发送请求
-        res = curl_easy_perform(curl);
-        if (res != CURLE_OK)
+        res = curl_easy_perform(curl);// 发送请求
+        if (res != CURLE_OK)//
         {
             fprintf(stderr, "cURL 请求失败: %s\n", curl_easy_strerror(res));
             free_memory(&chunk);
-            curl_slist_free_all(headers);
-            curl_easy_cleanup(curl);
+            curl_slist_free_all(headers);// 释放请求头
+            curl_easy_cleanup(curl);// 清理cURL
             return NULL;
         }
 
