@@ -17,6 +17,7 @@ add_executable(WORK main.c
         http.c
         readids.c
         getinfo.c
-        writeinfo.c)
+        writeinfo.c
+        getcharacters.c)
 
 target_link_libraries(WORK ${CURL_LIBRARY} ${CJSON_LIBRARY})

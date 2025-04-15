@@ -65,6 +65,42 @@ void writeinfo(const int *collection_id)
     fprintf(file, "\n---\n");
     fprintf(file, "\n## 剧情梗概:\n%s\n", getinfo(collection_id, "subject.short_summary"));
     fprintf(file, "\n---\n");
+    fprintf(file, "\n## 出演角色:\n");
+    get_characters(collection_id);  // <== 获取角色信息
+    // 写入出演角色表格
+    fprintf(file, "<table style=\"table-layout: fixed; width: 100%%;\">\n");
+
+    for (int i = 0; i < count; i++) {
+        if (i % 3 == 0)
+            fprintf(file, "<tr>\n");
+
+        fprintf(file, "<td style=\"width: 33.33%%; text-align: center; vertical-align: top;\">\n");
+
+        // 写入角色信息
+        fprintf(file, "%s<br>%s<br>配音: %s\n",
+                characters[i].relation,
+                characters[i].name,
+                characters[i].has_actor ? characters[i].actors[0].name : "暂无");
+
+        // 写入角色图像
+        if (strlen(characters[i].char_image) > 0) {
+            fprintf(file, "<br><img src=\"%s\" style=\"max-width: 100px; max-height: 100px;\">\n",
+                    characters[i].char_image);
+        }
+
+        // 写入配音图像
+        if (characters[i].has_actor && strlen(characters[i].actors[0].grid) > 0) {
+            fprintf(file, "<br><img src=\"%s\" style=\"max-width: 100px; max-height: 100px;\">\n",
+                    characters[i].actors[0].grid);
+        }
+
+        fprintf(file, "</td>\n");
+
+        if ((i + 1) % 3 == 0)
+            fprintf(file, "</tr>\n");
+    }
+
+    fprintf(file, "</table>\n\n");
     fprintf(file, "\n![](%s)\n", getinfo(collection_id, "subject.images.large"));
 
     // 关闭文件
