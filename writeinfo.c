@@ -32,9 +32,21 @@ char *creatfile(const int *collection_id)
 // 开始写入信息
 void writeinfo(const int *collection_id)
 {
-
+    // 调用windows API函数,检查/创建Output文件夹
+    if (CreateDirectory("Output", NULL) || GetLastError() == ERROR_ALREADY_EXISTS)
+    {
+        // 文件夹创建成功或已存在
+    }
+    else
+    {
+        printf("无法创建Output文件夹"); // 输出错误信息
+        return;
+    }
     // 获取文件名
     char *filename = creatfile(collection_id);
+    // 创建文件保存路径
+    char filepath[300];
+    snprintf(filepath, sizeof(filepath), "Output/%s", filename);
 
     // 转换为宽字符, 否则会出现乱码
     int len = MultiByteToWideChar(CP_UTF8, 0, filename, -1, NULL, 0);
