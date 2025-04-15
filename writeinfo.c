@@ -67,54 +67,54 @@ void writeinfo(const int *collection_id)
     fprintf(file, "\n---\n");
     fprintf(file, "\n## 出演角色:\n");
     get_characters(collection_id);  // <== 获取角色信息
-    // 写入出演角色表格
-    fprintf(file, "<table style=\"table-layout: fixed; width: 100%%;\">\n");
-    Character *current = character_head;
+    // 写入出演角色表格(使用HTML代码渲染)
+    fprintf(file, "<table style=\"table-layout: fixed; width: 100%%;\">\n");        //设置表格样式(HTML)
+    Character *current = character_head;    // 获取角色链表头结点
     int cell_count = 0;
 
-    while (current != NULL) {
-        if (cell_count % 3 == 0)
-            fprintf(file, "<tr>\n");
+    while (current != NULL) { // 遍历角色链表
+        if (cell_count % 3 == 0)    // 每行开始
+            fprintf(file, "<tr>\n");// 开始新行
 
-        fprintf(file, "<td style=\"width: 33.33%%; text-align: center; vertical-align: top;\">\n");
+        fprintf(file, "<td style=\"width: 33.33%%; text-align: center; vertical-align: top;\">\n");// 设置单元格样式(HTML)
 
         // 写入角色信息
         fprintf(file, "%s<br>%s<br>配音: %s\n",
-                current->relation,
-                current->name,
-                current->has_actor ? current->actors[0].name : "暂无");
+                current->relation,// 角色关系
+                current->name,// 角色名
+                current->has_actor ? current->actors[0].name : "暂无");//如果有配音，则显示配音角色名,否则显示暂无
 
         // 写入角色图像
         if (strlen(current->char_image) > 0) {
-            fprintf(file, "<br><img src=\"%s\" style=\"max-width: 100px; max-height: 100px;\">\n",
-                    current->char_image);
+            fprintf(file, "<br><img src=\"%s\" style=\"max-width: 100px; max-height: 100px;\">\n",// 设置图像样式(HTML)
+                    current->char_image);// 写入角色图像
         }
 
         // 写入配音图像
         if (current->has_actor && strlen(current->actors[0].grid) > 0) {
-            fprintf(file, "<br><img src=\"%s\" style=\"max-width: 100px; max-height: 100px;\">\n",
-                    current->actors[0].grid);
+            fprintf(file, "<br><img src=\"%s\" style=\"max-width: 100px; max-height: 100px;\">\n",// 设置图像样式(HTML)
+                    current->actors[0].grid);// 写入配音图像
         }
 
-        fprintf(file, "</td>\n");
+        fprintf(file, "</td>\n");// 结束单元格
 
-        if ((cell_count + 1) % 3 == 0)
+        if ((cell_count + 1) % 3 == 0)// 如果列数是3的倍数，结束行
             fprintf(file, "</tr>\n");
 
-        current = current->next;
-        cell_count++;
+        current = current->next;// 链表移动到下一个节点(角色)
+        cell_count++;// 列数加1
     }
 
     // 如果列数不是3的倍数，补全表格
     if (cell_count % 3 != 0) {
-        for (int i = cell_count % 3; i < 3; i++) {
-            fprintf(file, "<td></td>\n");
+        for (int i = cell_count % 3; i < 3; i++) {// 补全表格
+            fprintf(file, "<td></td>\n");//添加空单元格
         }
-        fprintf(file, "</tr>\n");
+        fprintf(file, "</tr>\n");// 结束行
     }
 
-    fprintf(file, "</table>\n\n");
-    fprintf(file, "\n![](%s)\n", getinfo(collection_id, "subject.images.large"));
+    fprintf(file, "</table>\n\n");// 结束表格
+    fprintf(file, "\n![](%s)\n", getinfo(collection_id, "subject.images.large"));// 写入封面
 
     // 关闭文件
     fclose(file);

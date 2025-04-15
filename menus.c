@@ -1,7 +1,7 @@
 #include "work.h"
 
 // 主菜单
-void menu()
+void menu0()
 {
     int choice;
     system("cls"); // 清屏
@@ -49,21 +49,21 @@ void menu1()
     char c;
     system("cls"); // 清屏
     printf("正在导出中........\n");
-    get_ids();
+    get_ids();      //获取条目ids
     printf("是否通过id进行全部导出?(y/n):\n");
     while (1)
     {
         scanf(" %c", &c);
         if (c == 'y' || c == 'Y')
         {
-            readids();
-            menu();
+            readids();      //读取条目ids
+            menu0();        //返回主菜单
             break;
         }
         else if (c == 'n' || c == 'N')
         {
             printf("正在返回主菜单...\n");
-            menu();
+            menu0();
             break;
         }
         else
@@ -92,7 +92,7 @@ void menu2()
         if (input[0] == 'q' || input[0] == 'Q')
         {
             printf("正在返回主菜单...\n");
-            menu();
+            menu0();        //返回主菜单
             break;
         }
         else
@@ -101,7 +101,7 @@ void menu2()
             if (id > 0)           // 检查是否为有效的正整数
             {
                 printf("条目id: %d\n", id);
-                writeinfo(id);
+                writeinfo(id);      //将条目写入
                 menu2();
                 break;
             }
@@ -113,7 +113,7 @@ void menu2()
 
 void menu3()
 {
-    system("cls");
+    system("cls");      //清屏
     int choice;
     printf("1. 从本地ids.txt中导出(需已经执行前一步选项1)\n");
     printf("2. 从服务器获取全部ids并直接导出\n");
@@ -132,18 +132,18 @@ void menu3()
         {
         case 1:
             system("cls");
-            readids();
-            menu();
+            readids();      // 读取条目ids,并写入
+            menu0();        //返回主菜单
             break;
         case 2:
             system("cls");
-            get_ids();
-            readids();
-            menu();
+            get_ids();      // 获取条目ids
+            readids();      // 读取条目ids,并写入
+            menu0();        // 返回主菜单
             break;
         case 3:
             printf("正在回退....\n");
-            menu();
+            menu0();        // 返回主菜单
             return;
         default:
             printf("请输入正确的选项(1-3): ");

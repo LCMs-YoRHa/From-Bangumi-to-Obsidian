@@ -63,8 +63,8 @@ build CMakeFiles/WORK.dir/menus.c.obj: C_COMPILER__WORK_unscanned_Debug F$:/Proj
   OBJECT_DIR = CMakeFiles\WORK.dir
   OBJECT_FILE_DIR = CMakeFiles\WORK.dir
 
-build CMakeFiles/WORK.dir/readcert.c.obj: C_COMPILER__WORK_unscanned_Debug F$:/Projects/C/WORK/readcert.c || cmake_object_order_depends_target_WORK
-  DEP_FILE = CMakeFiles\WORK.dir\readcert.c.obj.d
+build CMakeFiles/WORK.dir/read_certs.c.obj: C_COMPILER__WORK_unscanned_Debug F$:/Projects/C/WORK/read_certs.c || cmake_object_order_depends_target_WORK
+  DEP_FILE = CMakeFiles\WORK.dir\read_certs.c.obj.d
   FLAGS = -g -std=gnu11 -fdiagnostics-color=always
   INCLUDES = -ID:/VS/vcpkg/installed/x64-windows/include
   OBJECT_DIR = CMakeFiles\WORK.dir
@@ -84,15 +84,15 @@ build CMakeFiles/WORK.dir/http.c.obj: C_COMPILER__WORK_unscanned_Debug F$:/Proje
   OBJECT_DIR = CMakeFiles\WORK.dir
   OBJECT_FILE_DIR = CMakeFiles\WORK.dir
 
-build CMakeFiles/WORK.dir/readids.c.obj: C_COMPILER__WORK_unscanned_Debug F$:/Projects/C/WORK/readids.c || cmake_object_order_depends_target_WORK
-  DEP_FILE = CMakeFiles\WORK.dir\readids.c.obj.d
+build CMakeFiles/WORK.dir/read_ids.c.obj: C_COMPILER__WORK_unscanned_Debug F$:/Projects/C/WORK/read_ids.c || cmake_object_order_depends_target_WORK
+  DEP_FILE = CMakeFiles\WORK.dir\read_ids.c.obj.d
   FLAGS = -g -std=gnu11 -fdiagnostics-color=always
   INCLUDES = -ID:/VS/vcpkg/installed/x64-windows/include
   OBJECT_DIR = CMakeFiles\WORK.dir
   OBJECT_FILE_DIR = CMakeFiles\WORK.dir
 
-build CMakeFiles/WORK.dir/getinfo.c.obj: C_COMPILER__WORK_unscanned_Debug F$:/Projects/C/WORK/getinfo.c || cmake_object_order_depends_target_WORK
-  DEP_FILE = CMakeFiles\WORK.dir\getinfo.c.obj.d
+build CMakeFiles/WORK.dir/get_info.c.obj: C_COMPILER__WORK_unscanned_Debug F$:/Projects/C/WORK/get_info.c || cmake_object_order_depends_target_WORK
+  DEP_FILE = CMakeFiles\WORK.dir\get_info.c.obj.d
   FLAGS = -g -std=gnu11 -fdiagnostics-color=always
   INCLUDES = -ID:/VS/vcpkg/installed/x64-windows/include
   OBJECT_DIR = CMakeFiles\WORK.dir
@@ -105,8 +105,8 @@ build CMakeFiles/WORK.dir/writeinfo.c.obj: C_COMPILER__WORK_unscanned_Debug F$:/
   OBJECT_DIR = CMakeFiles\WORK.dir
   OBJECT_FILE_DIR = CMakeFiles\WORK.dir
 
-build CMakeFiles/WORK.dir/getcharacters.c.obj: C_COMPILER__WORK_unscanned_Debug F$:/Projects/C/WORK/getcharacters.c || cmake_object_order_depends_target_WORK
-  DEP_FILE = CMakeFiles\WORK.dir\getcharacters.c.obj.d
+build CMakeFiles/WORK.dir/get_characters.c.obj: C_COMPILER__WORK_unscanned_Debug F$:/Projects/C/WORK/get_characters.c || cmake_object_order_depends_target_WORK
+  DEP_FILE = CMakeFiles\WORK.dir\get_characters.c.obj.d
   FLAGS = -g -std=gnu11 -fdiagnostics-color=always
   INCLUDES = -ID:/VS/vcpkg/installed/x64-windows/include
   OBJECT_DIR = CMakeFiles\WORK.dir
@@ -120,7 +120,7 @@ build CMakeFiles/WORK.dir/getcharacters.c.obj: C_COMPILER__WORK_unscanned_Debug 
 #############################################
 # Link the executable WORK.exe
 
-build WORK.exe: C_EXECUTABLE_LINKER__WORK_Debug CMakeFiles/WORK.dir/main.c.obj CMakeFiles/WORK.dir/menus.c.obj CMakeFiles/WORK.dir/readcert.c.obj CMakeFiles/WORK.dir/get_ids.c.obj CMakeFiles/WORK.dir/http.c.obj CMakeFiles/WORK.dir/readids.c.obj CMakeFiles/WORK.dir/getinfo.c.obj CMakeFiles/WORK.dir/writeinfo.c.obj CMakeFiles/WORK.dir/getcharacters.c.obj | D$:/VS/vcpkg/installed/x64-windows/lib/libcurl.lib D$:/VS/vcpkg/installed/x64-windows/lib/cjson.lib
+build WORK.exe: C_EXECUTABLE_LINKER__WORK_Debug CMakeFiles/WORK.dir/main.c.obj CMakeFiles/WORK.dir/menus.c.obj CMakeFiles/WORK.dir/read_certs.c.obj CMakeFiles/WORK.dir/get_ids.c.obj CMakeFiles/WORK.dir/http.c.obj CMakeFiles/WORK.dir/read_ids.c.obj CMakeFiles/WORK.dir/get_info.c.obj CMakeFiles/WORK.dir/writeinfo.c.obj CMakeFiles/WORK.dir/get_characters.c.obj | D$:/VS/vcpkg/installed/x64-windows/lib/libcurl.lib D$:/VS/vcpkg/installed/x64-windows/lib/cjson.lib
   FLAGS = -g
   LINK_LIBRARIES = D:/VS/vcpkg/installed/x64-windows/lib/libcurl.lib  D:/VS/vcpkg/installed/x64-windows/lib/cjson.lib  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\WORK.dir

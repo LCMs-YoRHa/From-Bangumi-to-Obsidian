@@ -5,8 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <windows.h>
-#include <curl/curl.h>
 #include <cjson/cJSON.h>
+#include <curl/curl.h>
 
 // 定义一个结构体用于存储内存数据
 typedef struct
@@ -38,7 +38,7 @@ extern Character* character_head;   // 链表头指针
 extern int count;
 
 // 菜单函数
-void menu();
+void menu0();
 void menu1();
 void menu2();
 void menu3();
@@ -60,7 +60,9 @@ void free_memory(MemoryStruct *chunk);
 size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp);
 char *http_get(const char *url);
 
-#endif // WORK_H
+#endif
+
+// WORK_H
 
 //
 // Created by 18212 on 25-4-9.
