@@ -10,7 +10,7 @@ void readids()
         getchar();
         return menu3();
     }
-    int id;    // 读取读取 ID并导出条目
+    int id; // 读取读取 ID并导出条目
     // 循环读取文件内的每行数据
     while (fscanf(file, "%d", &id) == 1)
         writeinfo(id);

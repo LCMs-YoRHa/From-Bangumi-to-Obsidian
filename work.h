@@ -15,18 +15,20 @@ typedef struct
     size_t size;  // 记录 memory 指向的内存块的大小
 } MemoryStruct;
 
-typedef struct {
+typedef struct
+{
     char name[100];
-    char grid[200];  // 图像地址
+    char grid[200]; // 图像地址
 } Actor;
 
-typedef struct Character {
+typedef struct Character
+{
     char relation[100];
     char name[100];
     char char_image[200];
-    Actor actors[1];  // 简化处理，只取第一个配音演员
+    Actor actors[1]; // 简化处理，只取第一个配音演员
     int has_actor;
-    struct Character* next;  // 指向下一个节点的指针
+    struct Character *next; // 指向下一个节点的指针
 } Character;
 
 // 全局变量声明
@@ -34,7 +36,7 @@ extern char username[50];
 extern char token[100];
 extern char auth_header[256];
 extern char user_agent[256];
-extern Character* character_head;   // 链表头指针
+extern Character *character_head; // 链表头指针
 extern int count;
 
 // 菜单函数

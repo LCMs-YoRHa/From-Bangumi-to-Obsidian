@@ -3,10 +3,10 @@
 // 过滤非法字符
 void sanitize_filename(char *filename)
 {
-    char *illegal_chars = "\\/:*?\"<>|";    // 列出常见的文件名中的非法字符
+    char *illegal_chars = "\\/:*?\"<>|"; // 列出常见的文件名中的非法字符
     while (*filename)
     {
-        if (strchr(illegal_chars, *filename))   // 如果当前字符是非法字符，则替换为下划线
+        if (strchr(illegal_chars, *filename)) // 如果当前字符是非法字符，则替换为下划线
             *filename = '_';
         filename++;
     }
@@ -16,7 +16,7 @@ void sanitize_filename(char *filename)
 char *creatfile(const int *collection_id)
 {
     char filename[256];
-    const char *final_name = "unknown";// 默认文件名为unknown
+    const char *final_name = "unknown";                        // 默认文件名为unknown
     char *name_cn = getinfo(collection_id, "subject.name_cn"); // 获取中文名
     // 如果中文名为空，则使用原名, 否则使用中文名
     if (strlen(name_cn) == 0)
@@ -24,9 +24,9 @@ char *creatfile(const int *collection_id)
     else
         final_name = getinfo(collection_id, "subject.name_cn");
 
-    snprintf(filename, sizeof(filename), "%s.md", final_name);// 创建最终文件名
-    sanitize_filename(filename);// 过滤非法字符
-    return strdup(filename);//返回动态动态内存分配的字符串
+    snprintf(filename, sizeof(filename), "%s.md", final_name); // 创建最终文件名
+    sanitize_filename(filename);                               // 过滤非法字符
+    return strdup(filename);                                   // 返回动态动态内存分配的字符串
 }
 
 // 开始写入信息
@@ -38,8 +38,8 @@ void writeinfo(const int *collection_id)
 
     // 转换为宽字符, 否则会出现乱码
     int len = MultiByteToWideChar(CP_UTF8, 0, filename, -1, NULL, 0);
-    wchar_t wname[256];// 创建宽字符数组
-    MultiByteToWideChar(CP_UTF8, 0, filename, -1, wname, len);// 将宽字符数组转换为多字节字符数组
+    wchar_t wname[256];                                        // 创建宽字符数组
+    MultiByteToWideChar(CP_UTF8, 0, filename, -1, wname, len); // 将宽字符数组转换为多字节字符数组
 
     // 使用宽字符版本的 fopen,否则会出现乱码
     FILE *file = _wfopen(wname, L"wb");
@@ -66,55 +66,60 @@ void writeinfo(const int *collection_id)
     fprintf(file, "\n## 剧情梗概:\n%s\n", getinfo(collection_id, "subject.short_summary"));
     fprintf(file, "\n---\n");
     fprintf(file, "\n## 出演角色:\n");
-    get_characters(collection_id);  // <== 获取角色信息
+    get_characters(collection_id); // <== 获取角色信息
     // 写入出演角色表格(使用HTML代码渲染)
-    fprintf(file, "<table style=\"table-layout: fixed; width: 100%%;\">\n");        //设置表格样式(HTML)
-    Character *current = character_head;    // 获取角色链表头结点
+    fprintf(file, "<table style=\"table-layout: fixed; width: 100%%;\">\n"); // 设置表格样式(HTML)
+    Character *current = character_head;                                     // 获取角色链表头结点
     int cell_count = 0;
 
-    while (current != NULL) { // 遍历角色链表
-        if (cell_count % 3 == 0)    // 每行开始
-            fprintf(file, "<tr>\n");// 开始新行
+    while (current != NULL)
+    {                                // 遍历角色链表
+        if (cell_count % 3 == 0)     // 每行开始
+            fprintf(file, "<tr>\n"); // 开始新行
 
-        fprintf(file, "<td style=\"width: 33.33%%; text-align: center; vertical-align: top;\">\n");// 设置单元格样式(HTML)
+        fprintf(file, "<td style=\"width: 33.33%%; text-align: center; vertical-align: top;\">\n"); // 设置单元格样式(HTML)
 
         // 写入角色信息
         fprintf(file, "%s<br>%s<br>配音: %s\n",
-                current->relation,// 角色关系
-                current->name,// 角色名
-                current->has_actor ? current->actors[0].name : "暂无");//如果有配音，则显示配音角色名,否则显示暂无
+                current->relation,                                      // 角色关系
+                current->name,                                          // 角色名
+                current->has_actor ? current->actors[0].name : "暂无"); // 如果有配音，则显示配音角色名,否则显示暂无
 
         // 写入角色图像
-        if (strlen(current->char_image) > 0) {
-            fprintf(file, "<br><img src=\"%s\" style=\"max-width: 100px; max-height: 100px;\">\n",// 设置图像样式(HTML)
-                    current->char_image);// 写入角色图像
+        if (strlen(current->char_image) > 0)
+        {
+            fprintf(file, "<br><img src=\"%s\" style=\"max-width: 100px; max-height: 100px;\">\n", // 设置图像样式(HTML)
+                    current->char_image);                                                          // 写入角色图像
         }
 
         // 写入配音图像
-        if (current->has_actor && strlen(current->actors[0].grid) > 0) {
-            fprintf(file, "<br><img src=\"%s\" style=\"max-width: 100px; max-height: 100px;\">\n",// 设置图像样式(HTML)
-                    current->actors[0].grid);// 写入配音图像
+        if (current->has_actor && strlen(current->actors[0].grid) > 0)
+        {
+            fprintf(file, "<br><img src=\"%s\" style=\"max-width: 100px; max-height: 100px;\">\n", // 设置图像样式(HTML)
+                    current->actors[0].grid);                                                      // 写入配音图像
         }
 
-        fprintf(file, "</td>\n");// 结束单元格
+        fprintf(file, "</td>\n"); // 结束单元格
 
-        if ((cell_count + 1) % 3 == 0)// 如果列数是3的倍数，结束行
+        if ((cell_count + 1) % 3 == 0) // 如果列数是3的倍数，结束行
             fprintf(file, "</tr>\n");
 
-        current = current->next;// 链表移动到下一个节点(角色)
-        cell_count++;// 列数加1
+        current = current->next; // 链表移动到下一个节点(角色)
+        cell_count++;            // 列数加1
     }
 
     // 如果列数不是3的倍数，补全表格
-    if (cell_count % 3 != 0) {
-        for (int i = cell_count % 3; i < 3; i++) {// 补全表格
-            fprintf(file, "<td></td>\n");//添加空单元格
+    if (cell_count % 3 != 0)
+    {
+        for (int i = cell_count % 3; i < 3; i++)
+        {                                 // 补全表格
+            fprintf(file, "<td></td>\n"); // 添加空单元格
         }
-        fprintf(file, "</tr>\n");// 结束行
+        fprintf(file, "</tr>\n"); // 结束行
     }
 
-    fprintf(file, "</table>\n\n");// 结束表格
-    fprintf(file, "\n![](%s)\n", getinfo(collection_id, "subject.images.large"));// 写入封面
+    fprintf(file, "</table>\n\n");                                                // 结束表格
+    fprintf(file, "\n![](%s)\n", getinfo(collection_id, "subject.images.large")); // 写入封面
 
     // 关闭文件
     fclose(file);
