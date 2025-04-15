@@ -69,35 +69,48 @@ void writeinfo(const int *collection_id)
     get_characters(collection_id);  // <== 获取角色信息
     // 写入出演角色表格
     fprintf(file, "<table style=\"table-layout: fixed; width: 100%%;\">\n");
+    Character *current = character_head;
+    int cell_count = 0;
 
-    for (int i = 0; i < count; i++) {
-        if (i % 3 == 0)
+    while (current != NULL) {
+        if (cell_count % 3 == 0)
             fprintf(file, "<tr>\n");
 
         fprintf(file, "<td style=\"width: 33.33%%; text-align: center; vertical-align: top;\">\n");
 
         // 写入角色信息
         fprintf(file, "%s<br>%s<br>配音: %s\n",
-                characters[i].relation,
-                characters[i].name,
-                characters[i].has_actor ? characters[i].actors[0].name : "暂无");
+                current->relation,
+                current->name,
+                current->has_actor ? current->actors[0].name : "暂无");
 
         // 写入角色图像
-        if (strlen(characters[i].char_image) > 0) {
+        if (strlen(current->char_image) > 0) {
             fprintf(file, "<br><img src=\"%s\" style=\"max-width: 100px; max-height: 100px;\">\n",
-                    characters[i].char_image);
+                    current->char_image);
         }
 
         // 写入配音图像
-        if (characters[i].has_actor && strlen(characters[i].actors[0].grid) > 0) {
+        if (current->has_actor && strlen(current->actors[0].grid) > 0) {
             fprintf(file, "<br><img src=\"%s\" style=\"max-width: 100px; max-height: 100px;\">\n",
-                    characters[i].actors[0].grid);
+                    current->actors[0].grid);
         }
 
         fprintf(file, "</td>\n");
 
-        if ((i + 1) % 3 == 0)
+        if ((cell_count + 1) % 3 == 0)
             fprintf(file, "</tr>\n");
+
+        current = current->next;
+        cell_count++;
+    }
+
+    // 如果列数不是3的倍数，补全表格
+    if (cell_count % 3 != 0) {
+        for (int i = cell_count % 3; i < 3; i++) {
+            fprintf(file, "<td></td>\n");
+        }
+        fprintf(file, "</tr>\n");
     }
 
     fprintf(file, "</table>\n\n");

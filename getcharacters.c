@@ -1,10 +1,14 @@
 #include "work.h"
 
-Character characters[100];  // 全局变量定义
-int count = 0;
+Character* character_head = NULL;  // 全局变量定义
 
 void get_characters(const int *collection_id) {
-    count = 0; // 初始化角色数为0
+    // 清理之前的链表
+    while (character_head != NULL) {
+        Character* temp = character_head;
+        character_head = character_head->next;
+        free(temp);
+    }
 
     // 获取 subject.id
     char *subject_id = getinfo(collection_id, "subject.id");
@@ -22,13 +26,16 @@ void get_characters(const int *collection_id) {
     cJSON *json = cJSON_Parse(response);
     if (!cJSON_IsArray(json)) return;
 
+    Character* last = NULL;  // 跟踪链表尾部
     int size = cJSON_GetArraySize(json);
-    for (int i = 0; i < size && count < 100; i++) {
+    for (int i = 0; i < size; i++) {
         cJSON *item = cJSON_GetArrayItem(json, i);
         if (!item) continue;
 
-        Character *ch = &characters[count];
+        // 创建新节点
+        Character* ch = (Character*)malloc(sizeof(Character));
         memset(ch, 0, sizeof(Character));
+        ch->next = NULL;
 
         // 角色名
         cJSON *cname = cJSON_GetObjectItem(item, "name");
@@ -62,16 +69,15 @@ void get_characters(const int *collection_id) {
             }
         }
 
-        count++;
+        // 添加到链表
+        if (character_head == NULL) {
+            character_head = ch;
+        } else {
+            last->next = ch;
+        }
+        last = ch;
     }
 
     cJSON_Delete(json);
+    free(response);
 }
-
-
-
-
-
-//
-// Created by 18212 on 25-4-15.
-//
