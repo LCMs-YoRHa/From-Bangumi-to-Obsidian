@@ -32,25 +32,39 @@ char *creatfile(const int *collection_id)
 // 开始写入信息
 void writeinfo(const int *collection_id)
 {
+    // 已有的创建文件夹代码正确，保留不变
+    if (CreateDirectory("Output", NULL) || GetLastError() == ERROR_ALREADY_EXISTS)
+    {
+        // 文件夹创建成功或已存在
+    }
+    else
+    {
+        printf("无法创建Output文件夹\n");
+        return;
+    }
 
     // 获取文件名
     char *filename = creatfile(collection_id);
 
-    // 转换为宽字符, 否则会出现乱码
-    int len = MultiByteToWideChar(CP_UTF8, 0, filename, -1, NULL, 0);
-    wchar_t wname[256];                                        // 创建宽字符数组
-    MultiByteToWideChar(CP_UTF8, 0, filename, -1, wname, len); // 将宽字符数组转换为多字节字符数组
+    // 创建完整文件路径
+    char filepath[300];
+    snprintf(filepath, sizeof(filepath), "Output/%s", filename);
 
-    // 使用宽字符版本的 fopen,否则会出现乱码
-    FILE *file = _wfopen(wname, L"wb");
+    // 转换为宽字符，否则会出现乱码
+    int len = MultiByteToWideChar(CP_UTF8, 0, filepath, -1, NULL, 0);
+    wchar_t wpath[300];
+    MultiByteToWideChar(CP_UTF8, 0, filepath, -1, wpath, len);
+
+    // 使用完整路径打开文件
+    FILE *file = _wfopen(wpath, L"wb");
     if (file == NULL)
     {
-        printf("无法创建文件 %s\n", filename);
+        printf("无法创建文件 %s\n", filepath);
         free(filename);
         return;
     }
     else
-        printf("正在写入:%s\n", filename);
+        printf("正在写入: %s\n", filepath);
 
     // 写入简介
     fprintf(file, "# 简介\n\n");
