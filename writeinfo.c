@@ -102,7 +102,7 @@ void writeinfo(const int *collection_id)
         cell_count++;            // 列数加1
     }
 
-    // 如果列数不是3的倍数，补全表格
+    // 如果列数不是3的倍数则补全行
     if (cell_count % 3 != 0)
     {
         for (int i = cell_count % 3; i < 3; i++)

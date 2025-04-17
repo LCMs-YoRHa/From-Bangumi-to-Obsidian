@@ -37,30 +37,27 @@ extern char username[50];         // 用户的用户名
 extern char token[100];           // 用户的token
 extern char auth_header[256];     // 构造的请求头
 extern char user_agent[256];      // 构造的请求头
-extern Character *character_head; // 链表头指针
+extern Character *character_head; // 角色链表头指针
 extern int count;                 // 角色数量计数
 
 // 菜单函数
-void menu0();
+void menu0();                     //主菜单
 void menu1();
 void menu2();
 void menu3();
 
 // 文件操作函数
-void readcerts();
-void readids();
-char *creatfile(const int *collection_id);
-void writeinfo(const int *collection_id);
+void readcerts();                           //读取用户凭证
+void readids();                             //读取条目id
+char *creatfile(const int *collection_id);  //获取、判断、生成文件名
+void writeinfo(const int *collection_id);   //写入条目信息
 
 // 通过api获取数据的函数
-void get_ids();
-char *getinfo(const int *collection_id, const char *field_path);
-void get_characters(const int *collection_id);
+void get_ids();                                                         //获取收藏条目id
+char *getinfo(const int *collection_id, const char *field_path);        //获取收藏条目特定信息
+void get_characters(const int *collection_id);                          //获取角色信息
 
-// http请求的一系列函数
-void init_memory(MemoryStruct *chunk);
-void free_memory(MemoryStruct *chunk);
-size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp);
+// 用于http请求的函数
 char *http_get(const char *url);
 
 #endif
