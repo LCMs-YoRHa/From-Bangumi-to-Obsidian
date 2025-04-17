@@ -1,14 +1,14 @@
 #include "work.h"
 
 // 过滤非法字符
-void sanitize_filename(char *filename)
+void error(char *filename)
 {
-    char *illegal_chars = "\\/:*?\"<>|"; // 列出常见的文件名中的非法字符
-    while (*filename)
+    char *error_chars = "\\/:*?\"<>|"; // 列出常见的文件名中的非法字符
+    while (*filename)                  // 遍历文件名字符串
     {
-        if (strchr(illegal_chars, *filename)) // 如果当前字符是非法字符，则替换为下划线
+        if (strchr(error_chars, *filename)) // 如果当前字符是非法字符，则替换为下划线
             *filename = '_';
-        filename++;
+        filename++; // 指针操作,移动到下一个字符
     }
 }
 
@@ -16,55 +16,35 @@ void sanitize_filename(char *filename)
 char *creatfile(const int *collection_id)
 {
     char filename[256];
-    const char *final_name = "unknown";                        // 默认文件名为unknown
-    char *name_cn = getinfo(collection_id, "subject.name_cn"); // 获取中文名
+    const char *final_name = "unknown";                        // 规定默认文件名为unknown
+    char *name_cn = getinfo(collection_id, "subject.name_cn"); // 优先获取中文名
     // 如果中文名为空，则使用原名, 否则使用中文名
     if (strlen(name_cn) == 0)
         final_name = getinfo(collection_id, "subject.name");
     else
         final_name = getinfo(collection_id, "subject.name_cn");
 
-    snprintf(filename, sizeof(filename), "%s.md", final_name); // 创建最终文件名
-    sanitize_filename(filename);                               // 过滤非法字符
-    return strdup(filename);                                   // 返回动态动态内存分配的字符串
+    sprintf(filename, "%s.md", final_name); // 创建最终文件名
+    error(filename);                        // 过滤非法字符
+    return strdup(filename);                // 返回动态动态内存分配的字符串
 }
 
 // 开始写入信息
 void writeinfo(const int *collection_id)
 {
-    // 已有的创建文件夹代码正确，保留不变
-    if (CreateDirectory("Output", NULL) || GetLastError() == ERROR_ALREADY_EXISTS)
-    {
-        // 文件夹创建成功或已存在
-    }
-    else
-    {
-        printf("无法创建Output文件夹\n");
-        return;
-    }
-
-    // 获取文件名
-    char *filename = creatfile(collection_id);
-
+    CreateDirectory("Output", NULL);// 创建输出目录,如果目录已存在则忽略错误
+    char *filename = creatfile(collection_id); // 调用creatfile函数获取文件名
     // 创建完整文件路径
     char filepath[300];
-    snprintf(filepath, sizeof(filepath), "Output/%s", filename);
+    sprintf(filepath, "Output/%s", filename);
 
     // 转换为宽字符，否则会出现乱码
-    int len = MultiByteToWideChar(CP_UTF8, 0, filepath, -1, NULL, 0);
     wchar_t wpath[300];
-    MultiByteToWideChar(CP_UTF8, 0, filepath, -1, wpath, len);
+    MultiByteToWideChar(CP_UTF8, 0, filepath, -1, wpath, 300);
 
-    // 使用完整路径打开文件
+    // 使用_wfopen以宽字符模式打开文件
     FILE *file = _wfopen(wpath, L"wb");
-    if (file == NULL)
-    {
-        printf("无法创建文件 %s\n", filepath);
-        free(filename);
-        return;
-    }
-    else
-        printf("正在写入: %s\n", filepath);
+    printf("正在写入: %s\n", filepath);
 
     // 写入简介
     fprintf(file, "# 简介\n\n");
@@ -80,15 +60,15 @@ void writeinfo(const int *collection_id)
     fprintf(file, "\n## 剧情梗概:\n%s\n", getinfo(collection_id, "subject.short_summary"));
     fprintf(file, "\n---\n");
     fprintf(file, "\n## 出演角色:\n");
-    get_characters(collection_id); // <== 获取角色信息
+    get_characters(collection_id); // 获取角色信息
     // 写入出演角色表格(使用HTML代码渲染)
     fprintf(file, "<table style=\"table-layout: fixed; width: 100%%;\">\n"); // 设置表格样式(HTML)
-    Character *current = character_head;                                     // 获取角色链表头结点
+    Character *current = character_head;                                           // 获取角色链表头结点
     int cell_count = 0;
 
     while (current != NULL)
-    {                                // 遍历角色链表
-        if (cell_count % 3 == 0)     // 每行开始
+    {                                      // 遍历角色链表
+        if (cell_count % 3 == 0)           // 每行开始
             fprintf(file, "<tr>\n"); // 开始新行
 
         fprintf(file, "<td style=\"width: 33.33%%; text-align: center; vertical-align: top;\">\n"); // 设置单元格样式(HTML)
@@ -126,13 +106,13 @@ void writeinfo(const int *collection_id)
     if (cell_count % 3 != 0)
     {
         for (int i = cell_count % 3; i < 3; i++)
-        {                                 // 补全表格
+        {                                       // 补全表格
             fprintf(file, "<td></td>\n"); // 添加空单元格
         }
-        fprintf(file, "</tr>\n"); // 结束行
+        fprintf(file, "</tr>\n");         // 结束行
     }
 
-    fprintf(file, "</table>\n\n");                                                // 结束表格
+    fprintf(file, "</table>\n\n");                                                         // 结束表格
     fprintf(file, "\n![](%s)\n", getinfo(collection_id, "subject.images.large")); // 写入封面
 
     // 关闭文件

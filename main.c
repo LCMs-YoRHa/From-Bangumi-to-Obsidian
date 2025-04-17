@@ -3,7 +3,7 @@
 int main()
 {
 
-    SetConsoleOutputCP(65001); // 调用设置控制台输出为 UTF-8 编码
+    SetConsoleOutputCP(65001); // 设置控制台输出为 UTF-8 编码
     SetConsoleCP(65001);       // 设置控制台输入为 UTF-8 编码
 
     readcerts(); // 读取并生成凭证

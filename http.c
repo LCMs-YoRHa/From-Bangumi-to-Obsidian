@@ -35,17 +35,17 @@ size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp)
 char *http_get(const char *url)
 {
     CURL *curl;         // 声明cURL句柄
-    CURLcode res;       // cURL返回值
-    MemoryStruct chunk; // 定义内存结构体
+    CURLcode res;       // 声明cURL返回值
+    MemoryStruct chunk; // 声明内存结构体
 
-    init_memory(&chunk);               // 初始化内存
-    curl_global_init(CURL_GLOBAL_ALL); // 初始化全局变量
+    init_memory(&chunk);               // 申请内存
+    curl_global_init(CURL_GLOBAL_ALL); // 初始化cURL库
     curl = curl_easy_init();           // 初始化cURL句柄
 
     // 构造请求头
     if (curl)
     {
-        struct curl_slist *headers = NULL; // 定义请求头
+        struct curl_slist *headers = NULL; // 声明请求头
         headers = curl_slist_append(headers, "accept: application/json");
         headers = curl_slist_append(headers, auth_header);
         headers = curl_slist_append(headers, user_agent);

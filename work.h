@@ -1,6 +1,7 @@
 #ifndef WORK_H
 #define WORK_H
 
+// 导入头文件
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,27 +18,27 @@ typedef struct
 
 typedef struct
 {
-    char name[100];
+    char name[100]; // 配音演员姓名
     char grid[200]; // 图像地址
 } Actor;
 
 typedef struct Character
 {
-    char relation[100];
-    char name[100];
-    char char_image[200];
-    Actor actors[1]; // 简化处理，只取第一个配音演员
-    int has_actor;
+    char relation[100];     // 角色关系
+    char name[100];         // 角色姓名
+    char char_image[200];   // 角色图片地址
+    Actor actors[1];        // 简化处理，只取第一个配音演员
+    int has_actor;          // 定义有无配音演员
     struct Character *next; // 指向下一个节点的指针
 } Character;
 
 // 全局变量声明
-extern char username[50];
-extern char token[100];
-extern char auth_header[256];
-extern char user_agent[256];
+extern char username[50];         // 用户的用户名
+extern char token[100];           // 用户的token
+extern char auth_header[256];     // 构造的请求头
+extern char user_agent[256];      // 构造的请求头
 extern Character *character_head; // 链表头指针
-extern int count;
+extern int count;                 // 角色数量计数
 
 // 菜单函数
 void menu0();
