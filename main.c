@@ -2,11 +2,10 @@
 
 int main()
 {
+    SetConsoleOutputCP(65001); // 设置控制台输出用UTF-8编码
+    SetConsoleCP(65001);       // 设置控制台输入也用UTF-8编码
 
-    SetConsoleOutputCP(65001); // 设置控制台输出为 UTF-8 编码
-    SetConsoleCP(65001);       // 设置控制台输入为 UTF-8 编码
-
-    readcerts(); // 读取并生成凭证
-    menu0();     // 主菜单
-    return 0;
+    readcerts(); // 读取用户名和令牌
+    menu0();     // 显示主菜单
+    return 0; // 程序结束，返回0表示正常
 }

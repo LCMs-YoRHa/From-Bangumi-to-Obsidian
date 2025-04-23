@@ -1,126 +1,125 @@
 #include "work.h"
 
-// 过滤非法字符
+// 把文件名里的非法字符换成下划线
 void error(char *filename)
 {
-    char *error_chars = "\\/:*?\"<>|"; // 列出常见的文件名中的非法字符
-    while (*filename)                  // 遍历文件名字符串
+    char *error_chars = "\\/:*?\"<>|"; // 这些是Windows文件名里不能用的字符
+    while (*filename) // 挨个检查文件名里的每个字符
     {
-        if (strchr(error_chars, *filename)) // 如果当前字符是非法字符，则替换为下划线
-            *filename = '_';
-        filename++; // 指针操作,移动到下一个字符
+        if (strchr(error_chars, *filename)) // 如果这个字符是非法的
+            *filename = '_'; // 换成下划线
+        filename++; // 看下一个字符
     }
 }
 
-// 获取文件名
+// 帮我们生成一个文件名
 char *creatfile(const int *collection_id)
 {
-    char filename[256];
-    const char *final_name = "unknown";                        // 规定默认文件名为unknown
-    char *name_cn = getinfo(collection_id, "subject.name_cn"); // 优先获取中文名
-    // 如果中文名为空，则使用原名, 否则使用中文名
+    char filename[256]; // 存文件名的字符串
+    const char *final_name = "unknown"; // 默认文件名是"unknown"
+    char *name_cn = getinfo(collection_id, "subject.name_cn"); // 先试着拿中文名
+    // 检查中文名有没有，如果没有就用原名
     if (strlen(name_cn) == 0)
-        final_name = getinfo(collection_id, "subject.name");
+        final_name = getinfo(collection_id, "subject.name"); // 用原名
     else
-        final_name = getinfo(collection_id, "subject.name_cn");
+        final_name = getinfo(collection_id, "subject.name_cn"); // 用中文名
 
-    sprintf(filename, "%s.md", final_name); // 创建最终文件名
-    error(filename);                        // 过滤非法字符
-    return strdup(filename);                // 返回动态动态内存分配的字符串
+    sprintf(filename, "%s.md", final_name); // 把名字加上".md"，做成Markdown文件名
+    error(filename); // 检查并替换非法字符
+    return strdup(filename); // 返回一份新的文件名字符串
 }
 
-// 开始写入信息
+// 把条目信息写到文件里
 void writeinfo(const int *collection_id)
 {
-    CreateDirectory("Output", NULL);// 创建输出目录,如果目录已存在则忽略错误
-    char *filename = creatfile(collection_id); // 调用creatfile函数获取文件名
-    // 创建完整文件路径
+    CreateDirectory("Output", NULL); // 创建一个"Output"文件夹，放输出的文件
+    char *filename = creatfile(collection_id); // 调用函数生成文件名
+    // 拼出完整的文件路径
     char filepath[300];
     sprintf(filepath, "Output/%s", filename);
 
-    // 转换为宽字符，否则会出现乱码
+    // 把路径转成宽字符，防止中文乱码
     wchar_t wpath[300];
     MultiByteToWideChar(CP_UTF8, 0, filepath, -1, wpath, 300);
 
-    // 使用_wfopen以宽字符模式打开文件
+    // 用宽字符模式打开文件，准备写入
     FILE *file = _wfopen(wpath, L"wb");
-    printf("正在写入: %s\n", filepath);
+    printf("正在写入: %s\n", filepath); // 告诉用户正在写哪个文件
 
-    // 写入简介
-    fprintf(file, "# 简介\n\n");
-    fprintf(file, "\n---\n");
-    fprintf(file, "\n原名:%s\n", getinfo(collection_id, "subject.name"));
-    fprintf(file, "\n话数:%s\n", getinfo(collection_id, "subject.eps"));
-    fprintf(file, "\n版本:%s\n", getinfo(collection_id, "subject.subject_type"));
-    fprintf(file, "\n收录评分:%s\n", getinfo(collection_id, "subject.score"));
-    fprintf(file, "\n放送开始:%s\n", getinfo(collection_id, "subject.date"));
-    fprintf(file, "\n收藏日期:%s\n", getinfo(collection_id, "updated_at"));
-    fprintf(file, "\n封面链接:%s\n", getinfo(collection_id, "subject.images.large"));
-    fprintf(file, "\n---\n");
-    fprintf(file, "\n## 剧情梗概:\n%s\n", getinfo(collection_id, "subject.short_summary"));
-    fprintf(file, "\n---\n");
-    fprintf(file, "\n## 出演角色:\n");
+    // 开始写文件内容
+    fprintf(file, "# 简介\n\n"); // 标题
+    fprintf(file, "\n---\n"); // 分隔线
+    fprintf(file, "\n原名:%s\n", getinfo(collection_id, "subject.name")); // 写原名
+    fprintf(file, "\n话数:%s\n", getinfo(collection_id, "subject.eps")); // 写话数
+    fprintf(file, "\n版本:%s\n", getinfo(collection_id, "subject.subject_type")); // 写版本
+    fprintf(file, "\n收录评分:%s\n", getinfo(collection_id, "subject.score")); // 写评分
+    fprintf(file, "\n放送开始:%s\n", getinfo(collection_id, "subject.date")); // 写开始时间
+    fprintf(file, "\n收藏日期:%s\n", getinfo(collection_id, "updated_at")); // 写收藏时间
+    fprintf(file, "\n封面链接:%s\n", getinfo(collection_id, "subject.images.large")); // 写封面地址
+    fprintf(file, "\n---\n"); // 分隔线
+    fprintf(file, "\n## 剧情梗概:\n%s\n", getinfo(collection_id, "subject.short_summary")); // 写剧情简介
+    fprintf(file, "\n---\n"); // 分隔线
+    fprintf(file, "\n## 出演角色:\n"); // 角色信息标题
     get_characters(collection_id); // 获取角色信息
-    // 写入出演角色表格(使用HTML代码渲染)
-    fprintf(file, "<table style=\"table-layout: fixed; width: 100%%;\">\n"); // 设置表格样式(HTML)
-    Character *current = character_head;                                           // 获取角色链表头结点
-    int cell_count = 0;
+    // 用HTML表格展示角色信息
+    fprintf(file, "<table style=\"table-layout: fixed; width: 100%%;\">\n"); // 开始表格，设置样式
+    Character *current = character_head; // 从角色链表的头开始
+    int cell_count = 0; // 计数器，记录写了几个格子
 
-    while (current != NULL)
-    {                                      // 遍历角色链表
-        if (cell_count % 3 == 0)           // 每行开始
+    while (current != NULL) // 挨个处理链表里的角色
+    {
+        if (cell_count % 3 == 0) // 每3个格子换一行
             fprintf(file, "<tr>\n"); // 开始新行
 
-        fprintf(file, "<td style=\"width: 33.33%%; text-align: center; vertical-align: top;\">\n"); // 设置单元格样式(HTML)
+        fprintf(file, "<td style=\"width: 33.33%%; text-align: center; vertical-align: top;\">\n"); // 开始一个格子，设置样式
 
-        // 写入角色信息
+        // 写角色信息
         fprintf(file, "%s<br>%s<br>配音: %s\n",
-                current->relation,                                      // 角色关系
-                current->name,                                          // 角色名
-                current->has_actor ? current->actors[0].name : "暂无"); // 如果有配音，则显示配音角色名,否则显示暂无
+                current->relation, // 角色关系
+                current->name, // 角色名字
+                current->has_actor ? current->actors[0].name : "暂无"); // 有配音就写名字，没有就写"暂无"
 
-        // 写入角色图像
+        // 如果有角色图片，就写进去
         if (strlen(current->char_image) > 0)
         {
-            fprintf(file, "<br><img src=\"%s\" style=\"max-width: 100px; max-height: 100px;\">\n", // 设置图像样式(HTML)
-                    current->char_image);                                                          // 写入角色图像
+            fprintf(file, "<br><img src=\"%s\" style=\"max-width: 100px; max-height: 100px;\">\n", // 加图片标签
+                    current->char_image); // 图片地址
         }
 
-        // 写入配音图像
+        // 如果有配音演员的图片，也写进去
         if (current->has_actor && strlen(current->actors[0].grid) > 0)
         {
-            fprintf(file, "<br><img src=\"%s\" style=\"max-width: 100px; max-height: 100px;\">\n", // 设置图像样式(HTML)
-                    current->actors[0].grid);                                                      // 写入配音图像
+            fprintf(file, "<br><img src=\"%s\" style=\"max-width: 100px; max-height: 100px;\">\n", // 加图片标签
+                    current->actors[0].grid); // 配音演员图片地址
         }
 
-        fprintf(file, "</td>\n"); // 结束单元格
+        fprintf(file, "</td>\n"); // 结束这个格子
 
-        if ((cell_count + 1) % 3 == 0) // 如果列数是3的倍数，结束行
-            fprintf(file, "</tr>\n");
+        if ((cell_count + 1) % 3 == 0) // 如果写了3个格子
+            fprintf(file, "</tr>\n"); // 结束这行
 
-        current = current->next; // 链表移动到下一个节点(角色)
-        cell_count++;            // 列数加1
+        current = current->next; // 移动到下一个角色
+        cell_count++; // 格子数加1
     }
 
-    // 如果列数不是3的倍数则补全行
+    // 如果格子数不是3的倍数，补齐空格子
     if (cell_count % 3 != 0)
     {
-        for (int i = cell_count % 3; i < 3; i++)
-        {                                       // 补全表格
-            fprintf(file, "<td></td>\n"); // 添加空单元格
+        for (int i = cell_count % 3; i < 3; i++) // 补上缺少的格子
+        {
+            fprintf(file, "<td></td>\n"); // 空格子
         }
-        fprintf(file, "</tr>\n");         // 结束行
+        fprintf(file, "</tr>\n"); // 结束行
     }
 
-    fprintf(file, "</table>\n\n");                                                         // 结束表格
-    fprintf(file, "\n![](%s)\n", getinfo(collection_id, "subject.images.large")); // 写入封面
+    fprintf(file, "</table>\n\n"); // 结束表格
+    fprintf(file, "\n![](%s)\n", getinfo(collection_id, "subject.images.large")); // 写封面图片
 
-    // 关闭文件
+    // 文件写完了，关闭并释放内存
     fclose(file);
-    printf("文件 %s 已成功创建\n", filename);
-    free(filename);
+    printf("文件 %s 已成功创建\n", filename); // 告诉用户文件写好了
+    free(filename); // 释放文件名内存
 }
 
-//
+// 文件创建信息
 // Created by 18212 on 25-4-9.
-//

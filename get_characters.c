@@ -1,92 +1,92 @@
 #include "work.h"
 
-Character *character_head = NULL; // 全局变量定义, 用于存储角色信息头节点
+Character *character_head = NULL; // 全局变量，是角色链表的起点，初始为空
 
-// 获取角色信息的函数
+// 获取角色的信息
 void get_characters(const int *collection_id)
 {
-    // 首先清理之前的链表,确保不会因为链表未释放而导致重复添加数据
-    while (character_head != NULL) // 如果链表不为空,则:
+    // 先清理旧的角色链表，防止数据重复
+    while (character_head != NULL) // 如果链表里有东西
     {
-        Character *temp = character_head;      // 将当前头指针赋值给临时指针
-        character_head = character_head->next; // 为了下一步的释放,先将头指针指向下一个节点
-        free(temp);                            // 释放当前节点
+        Character *temp = character_head; // 用临时指针记住当前节点
+        character_head = character_head->next; // 链表头指向下一个
+        free(temp); // 释放旧节点
     }
 
-    // 拼接用于获取角色信息的URL
+    // 拼出请求角色的网络地址
     char url[256];
-    snprintf(url, sizeof(url), "https://api.bgm.tv/v0/subjects/%d/characters", collection_id); // 将用于获取角色信息的API插入到url中
+    snprintf(url, sizeof(url), "https://api.bgm.tv/v0/subjects/%d/characters", collection_id); // 用条目ID填地址
 
-    char *response = http_get(url);      // 发送GET请求,获取角色信息数据后赋值给response
-    cJSON *json = cJSON_Parse(response); // 调用cJSON库解析JSON数据,将解析后的结果赋值给json
-    Character *last = NULL;              // 定义一个指针last,用于遍历链表
-    int size = cJSON_GetArraySize(json); // 获取JSON数组的大小,即角色数量
+    char *response = http_get(url); // 从网络拿数据
+    cJSON *json = cJSON_Parse(response); // 把数据转成JSON格式，方便读取
+    Character *last = NULL; // 用来记住链表最后一个节点
+    int size = cJSON_GetArraySize(json); // 看看有多少个角色
 
-    // 遍历JSON数组,将每个角色信息添加到链表中
+    // 挨个读取JSON里的角色信息，加到链表里
     for (int i = 0; i < size; i++)
     {
-        cJSON *item = cJSON_GetArrayItem(json, i); // 获取JSON数组中的每个元素
-        if (!item)
-            continue; // 如果获取失败,则跳过,继续下一个元素
+        cJSON *item = cJSON_GetArrayItem(json, i); // 拿出第i个角色
+        if (!item) // 如果拿不到
+            continue; // 跳过这个，继续下一个
 
-        // 创建新节点
-        Character *ch = (Character *)malloc(sizeof(Character)); // 使用malloc动态分配内存,创建一个新的角色节点
-        memset(ch, 0, sizeof(Character));                       // 首先将内存清空,避免未初始化的内存导致错误
-        ch->next = NULL;                                        // 初始化下一个节点指针为NULL
+        // 创建一个新角色节点
+        Character *ch = (Character *)malloc(sizeof(Character)); // 开一块内存
+        memset(ch, 0, sizeof(Character)); // 清空内存，避免有乱数据
+        ch->next = NULL; // 新节点的下一个指针设为空
 
-        // 角色名
-        cJSON *cname = cJSON_GetObjectItem(item, "name");            // 使用cJSON_GetObjectItem函数获取JSON对象中的name字段
-        if (cJSON_IsString(cname))                                   // 判断是否为字符串类型:
-            strncpy(ch->name, cname->valuestring, sizeof(ch->name)); // 将获取到的字符串复制到角色节点的name字段中
+        // 拿角色名字
+        cJSON *cname = cJSON_GetObjectItem(item, "name"); // 从JSON里找"name"
+        if (cJSON_IsString(cname)) // 如果是个字符串
+            strncpy(ch->name, cname->valuestring, sizeof(ch->name)); // 复制到节点
 
-        // 角色关系
-        cJSON *crel = cJSON_GetObjectItem(item, "relation"); // 获取relation字段
+        // 拿角色关系
+        cJSON *crel = cJSON_GetObjectItem(item, "relation"); // 找"relation"
         if (cJSON_IsString(crel))
-            strncpy(ch->relation, crel->valuestring, sizeof(ch->relation)); // 将获取到的字符串复制到角色节点的relation字段中
+            strncpy(ch->relation, crel->valuestring, sizeof(ch->relation)); // 复制
 
-        // 角色图片
+        // 拿角色图片
         cJSON *images = cJSON_GetObjectItem(item, "images");
-        if (cJSON_IsObject(images)) // 判断是否为数组类型
+        if (cJSON_IsObject(images)) // 如果有图片信息
         {
-            cJSON *grid = cJSON_GetObjectItem(images, "grid"); // 获取grid字段
+            cJSON *grid = cJSON_GetObjectItem(images, "grid"); // 找"grid"
             if (cJSON_IsString(grid))
-                strncpy(ch->char_image, grid->valuestring, sizeof(ch->char_image)); // 将获取到的字符串复制到角色节点的char_image字段中
+                strncpy(ch->char_image, grid->valuestring, sizeof(ch->char_image)); // 复制图片地址
         }
 
-        // 配音演员
-        cJSON *actors = cJSON_GetObjectItem(item, "actors");         // 获取actors字段
-        if (cJSON_IsArray(actors) && cJSON_GetArraySize(actors) > 0) // 如果actors是数组类型且长度大于0
+        // 拿配音演员信息
+        cJSON *actors = cJSON_GetObjectItem(item, "actors"); // 找"actors"
+        if (cJSON_IsArray(actors) && cJSON_GetArraySize(actors) > 0) // 如果有配音演员
         {
-            cJSON *actor = cJSON_GetArrayItem(actors, 0); // 获取第一个配音演员
-            if (actor)                                    // 若actor不为空
+            cJSON *actor = cJSON_GetArrayItem(actors, 0); // 只拿第一个演员
+            if (actor) // 如果有这个演员
             {
-                cJSON *aname = cJSON_GetObjectItem(actor, "name"); // 获取name字段
+                cJSON *aname = cJSON_GetObjectItem(actor, "name"); // 找名字
                 if (cJSON_IsString(aname))
-                    strncpy(ch->actors[0].name, aname->valuestring, sizeof(ch->actors[0].name)); // 将获取到的字符串复制到角色节点的配音演员姓名字段中
+                    strncpy(ch->actors[0].name, aname->valuestring, sizeof(ch->actors[0].name)); // 复制名字
 
-                cJSON *aimg = cJSON_GetObjectItem(actor, "images"); // 获取images字段
+                cJSON *aimg = cJSON_GetObjectItem(actor, "images"); // 找图片
                 if (cJSON_IsObject(aimg))
                 {
-                    cJSON *agrid = cJSON_GetObjectItem(aimg, "grid"); // 获取grid字段
+                    cJSON *agrid = cJSON_GetObjectItem(aimg, "grid"); // 找"grid"
                     if (cJSON_IsString(agrid))
-                        strncpy(ch->actors[0].grid, agrid->valuestring, sizeof(ch->actors[0].grid)); // 将获取到的字符串复制到角色节点的配音演员图片地址字段中
+                        strncpy(ch->actors[0].grid, agrid->valuestring, sizeof(ch->actors[0].grid)); // 复制图片地址
                 }
-                ch->has_actor = 1; // 标记为有actor
+                ch->has_actor = 1; // 标记这个角色有配音演员
             }
         }
 
-        // 如果没有配音演员,则将has_actor设为0
-        if (character_head == NULL)
-        {                        // 如果链表为空
-            character_head = ch; // 将新节点设为头结点,为了避免每次都从头开始遍历
+        // 把新节点加到链表里
+        if (character_head == NULL) // 如果链表是空的
+        {
+            character_head = ch; // 新节点变成头
         }
-        else
-        { // 否则，将新节点添加到链表尾部,为了避免每次都从头开始遍历
-            last->next = ch;
+        else // 如果链表有东西
+        {
+            last->next = ch; // 加到最后面
         }
-        last = ch; // 更新链表尾结点指针
+        last = ch; // 更新最后一个节点
     }
-    //     释放JSON对象
+    // 清理JSON数据和网络返回的数据
     cJSON_Delete(json);
     free(response);
 }
