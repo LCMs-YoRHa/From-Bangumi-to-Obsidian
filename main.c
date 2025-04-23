@@ -7,5 +7,5 @@ int main()
 
     readcerts(); // 读取用户名和令牌
     menu0();     // 显示主菜单
-    return 0; // 程序结束，返回0表示正常
+    return 0;    // 程序结束，返回0表示正常
 }

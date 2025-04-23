@@ -12,7 +12,7 @@ void get_ids()
     if (!response) // 如果没拿到数据
     {
         printf("获取id数据失败/没有条目数据\n"); // 提示失败
-        return; // 退出函数
+        return;                                  // 退出函数
     }
 
     // 解析数据成JSON
@@ -20,14 +20,14 @@ void get_ids()
     cJSON *data = cJSON_GetObjectItem(json, "data"); // 找"data"部分
     // 打开文件准备写入
     FILE *file = fopen("ids.txt", "w"); // 以写模式打开，覆盖旧内容
-    cJSON *item; // 用来遍历数据
-    cJSON_ArrayForEach(item, data) // 挨个看data里的东西
+    cJSON *item;                        // 用来遍历数据
+    cJSON_ArrayForEach(item, data)      // 挨个看data里的东西
     {
         cJSON *subject_id = cJSON_GetObjectItem(item, "subject_id"); // 找ID
-        fprintf(file, "%d\n", subject_id->valueint); // 写到文件，每行一个
+        fprintf(file, "%d\n", subject_id->valueint);                 // 写到文件，每行一个
     }
 
-    fclose(file); // 关闭文件
+    fclose(file);                        // 关闭文件
     printf("ID 已成功导出至 ids.txt\n"); // 告诉用户写好了
 
     // 清理数据

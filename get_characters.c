@@ -20,7 +20,7 @@ void get_characters(const int *collection_id)
     char *response = http_get(url); // 从网络拿数据
     cJSON *json = cJSON_Parse(response); // 把数据转成JSON格式，方便读取
     Character *last = NULL; // 用来记住链表最后一个节点
-    int size = cJSON_GetArraySize(json); // 看看有多少个角色
+    int size = cJSON_GetArraySize(json); // 计算有多少个角色
 
     // 挨个读取JSON里的角色信息，加到链表里
     for (int i = 0; i < size; i++)

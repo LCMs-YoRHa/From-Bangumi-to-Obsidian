@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="F:\Projects\C\WORK\main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Projects\C\WORK\menus.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Projects\C\WORK\read_certs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Projects\C\WORK\get_ids.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Projects\C\WORK\http.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Projects\C\WORK\read_ids.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Projects\C\WORK\get_info.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Projects\C\WORK\writeinfo.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\Projects\C\WORK\get_characters.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="F:\Projects\C\WORK\work.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="F:\Projects\C\WORK\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{B14512DB-669E-3029-811C-C11F530D537C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{FF83B173-B6DC-3098-9869-D2BA47C780D9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
