@@ -33,7 +33,7 @@
 
    ![image-20250218141943278](images/image-20250218141943278.png)
 
-3. 前往Bangumi生成个人 [Access Token](images/image-20250218135108607.png)
+3. 前往Bangumi生成个人 [Access Token](https://next.bgm.tv/demo/access-token)
 
    ![image-20250218135247532](images/image-20250218135247532.png)
 
