@@ -1,2 +1,2 @@
-username=mydg0216
-token=3KoYwNI7397p6KPnpVGtEYOnOnUl0GwP8Vt4N31R
+username=
+token=
