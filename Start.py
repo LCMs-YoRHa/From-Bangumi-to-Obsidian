@@ -50,12 +50,15 @@ elif choice == "4":
     print("开始读取ids.txt中的条目ID...")
     with open('subject_ids.txt', 'r', encoding='utf-8') as f:
         subject_ids = f.read().split(',')
-    privacy_choice = input("是否将所有条目设置为私密?(y/n):")
+    privacy_choice = input("是公开所有条目?(y/n):")
     is_private = True if privacy_choice.lower() == "y" else False
     for count, subject_id in enumerate(subject_ids, start=1):
         try:
-            Bangumi.update_collection_privacy(subject_id.strip(), token, is_private, user_id)
-            print(f"第{count}个条目 {subject_id} 的隐私设置已更新为 {'私密' if is_private else '公开'}")
+            result = Bangumi.update_collection_privacy(subject_id.strip(), token, is_private, user_id)
+            if result.get("status") == "success":
+                print(f"第{count}个条目 {subject_id} 的隐私设置已更新为 {'私密' if is_private else '公开'}")
+            else:
+                print(f"第{count}个条目 {subject_id} 更新失败: 未知错误")
         except requests.exceptions.RequestException as e:
             print(f"条目 {subject_id} 更新失败: {e}")
     print("所有条目隐私设置更新完成。")

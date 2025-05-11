@@ -82,5 +82,15 @@ def update_collection_privacy(subject_id, token, is_private, user_id):
         "private": is_private
     }
     response = requests.post(url, headers=headers, json=data)
-    response.raise_for_status()
-    return response.json()
+    if response.status_code == 202:  # 204 No Content 表示成功
+        return {"status": "success"}
+    try:
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.HTTPError as e:
+        print(f"HTTP 错误: {e.response.status_code} {e.response.reason}")
+        print(f"响应内容: {response.text}")
+        raise
+    except json.JSONDecodeError:
+        print(f"无法解析响应为 JSON: {response.text}")
+        raise
