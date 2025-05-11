@@ -69,3 +69,18 @@ def getsubjectrelations(subject_id,user_id):
     }
     response = requests.get(url, headers=headers)
     return json.loads(response.text)
+
+# 修改收藏条目是否公开
+def update_collection_privacy(subject_id, token, is_private, user_id):
+    url = f'https://api.bgm.tv/v0/users/-/collections/{subject_id}'
+    headers = {
+        "accept": "application/json",
+        "User-Agent": f"{user_id}/my-private-project",
+        "Authorization": f"Bearer {token}"
+    }
+    data = {
+        "private": is_private
+    }
+    response = requests.post(url, headers=headers, json=data)
+    response.raise_for_status()
+    return response.json()

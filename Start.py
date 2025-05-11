@@ -1,4 +1,6 @@
 from getInfo import *
+import Bangumi
+import requests
 
 print("欢迎使用本项目")
 print("请确保当前目录下存在credentials.txt文件，其中第一行为user_id,第二行为token")
@@ -10,6 +12,7 @@ print("请选择功能:")
 print("1.导入用户个人全部收藏条目")
 print("2.导入用户个人单个收藏条目")
 print("3.根据本地subject_ids.txt文件逐个写入条目")
+print("4.修改全部条目隐私设置")
 choice = input("请输入数字选择功能:")
 
 if choice == "1":
@@ -43,4 +46,16 @@ elif choice == "3":
     process_subject_ids(user_id, token)
     print("文件写入完成")
 
-
+elif choice == "4":
+    print("开始读取ids.txt中的条目ID...")
+    with open('subject_ids.txt', 'r', encoding='utf-8') as f:
+        subject_ids = f.read().split(',')
+    privacy_choice = input("是否将所有条目设置为私密?(y/n):")
+    is_private = True if privacy_choice.lower() == "y" else False
+    for count, subject_id in enumerate(subject_ids, start=1):
+        try:
+            Bangumi.update_collection_privacy(subject_id.strip(), token, is_private, user_id)
+            print(f"第{count}个条目 {subject_id} 的隐私设置已更新为 {'私密' if is_private else '公开'}")
+        except requests.exceptions.RequestException as e:
+            print(f"条目 {subject_id} 更新失败: {e}")
+    print("所有条目隐私设置更新完成。")
