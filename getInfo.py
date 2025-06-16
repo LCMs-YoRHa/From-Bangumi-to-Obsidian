@@ -66,9 +66,9 @@ def write_extended_subject_data(user_id,subject_id,token):
 
     # 观看状态映射
     status_mapping = {
-        1: "在看",
+        1: "想看",
         2: "看过",
-        3: "想看",
+        3: "在看",
         4: "搁置",
         5: "抛弃"
     }
