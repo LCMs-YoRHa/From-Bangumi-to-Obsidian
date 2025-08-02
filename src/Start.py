@@ -1,12 +1,27 @@
 from getInfo import *
 import Bangumi
 import requests
+import os
+
+def get_project_root_path(filename):
+    """获取项目根目录中文件的完整路径"""
+    # 如果文件存在于当前目录
+    if os.path.exists(filename):
+        return filename
+    
+    # 尝试在上级目录（项目根目录）查找
+    parent_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), filename)
+    if os.path.exists(parent_path):
+        return parent_path
+    
+    # 如果都不存在，返回项目根目录的路径
+    return os.path.join(os.path.dirname(os.path.dirname(__file__)), filename)
 
 print("欢迎使用本项目")
 print("请确保当前目录下存在credentials.txt文件，其中第一行为user_id,第二行为token")
 
 # 读取用户user_id和token
-user_id, token = read_credentials('credentials.txt')
+user_id, token = read_credentials(get_project_root_path('credentials.txt'))
 
 print("请选择功能:")
 print("1.导入用户个人全部收藏条目")
@@ -47,8 +62,9 @@ elif choice == "3":
     print("文件写入完成")
 
 elif choice == "4":
-    print("开始读取ids.txt中的条目ID...")
-    with open('subject_ids.txt', 'r', encoding='utf-8') as f:
+    print("开始读取subject_ids.txt中的条目ID...")
+    subject_ids_path = get_project_root_path('subject_ids.txt')
+    with open(subject_ids_path, 'r', encoding='utf-8') as f:
         subject_ids = f.read().split(',')
     privacy_choice = input("是公开所有条目?(y/n):")
     is_private = True if privacy_choice.lower() == "y" else False

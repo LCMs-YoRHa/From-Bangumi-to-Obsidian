@@ -3,6 +3,20 @@ import Bangumi
 import re
 import os
 
+def get_project_root_path(filename):
+    """获取项目根目录中文件的完整路径"""
+    # 如果文件存在于当前目录
+    if os.path.exists(filename):
+        return filename
+    
+    # 尝试在上级目录（项目根目录）查找
+    parent_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), filename)
+    if os.path.exists(parent_path):
+        return parent_path
+    
+    # 如果都不存在，返回项目根目录的路径
+    return os.path.join(os.path.dirname(os.path.dirname(__file__)), filename)
+
 # 利用正则筛除文件名内不受支持的字符
 def sanitize_filename(filename):
     sanitized = re.sub(r'[\\/*?:"<>|]', "", filename)
@@ -13,7 +27,8 @@ def sanitize_filename(filename):
 
 # 读取用户user_id和token
 def read_credentials(file_path):
-    with open(file_path, 'r', encoding='utf-8') as file:
+    full_path = get_project_root_path(file_path)
+    with open(full_path, 'r', encoding='utf-8') as file:
         lines = file.readlines()
         user_id = lines[0].strip()
         token = lines[1].strip()
@@ -24,7 +39,8 @@ def extract_subject_ids(collection_data):
     return [item['subject_id'] for item in collection_data.get('data', [])]
 
 def write_subject_ids_to_file(subject_ids, file_name):
-    with open(file_name, 'w', encoding='utf-8') as f:
+    full_path = get_project_root_path(file_name)
+    with open(full_path, 'w', encoding='utf-8') as f:
         f.write(','.join(map(str, subject_ids)))
 
 def fetch_and_write_all_subject_ids(user_id, token, subject_type=2, type=None, limit=30, offset=0):
@@ -36,7 +52,7 @@ def fetch_and_write_all_subject_ids(user_id, token, subject_type=2, type=None, l
         all_subject_ids.extend(extract_subject_ids(collection_data))
         offset += limit
     write_subject_ids_to_file(all_subject_ids, 'subject_ids.txt')
-    print("保存为同目录下subject_ids.txt")
+    print("保存为项目根目录下subject_ids.txt")
 
 # 写入单个条目数据
 def write_extended_subject_data(user_id,subject_id,token):
@@ -47,8 +63,11 @@ def write_extended_subject_data(user_id,subject_id,token):
     characters_data = Bangumi.getsubjectcharacters(subject_id,user_id)
     relations_data = Bangumi.getsubjectrelations(subject_id,user_id)
 
-    # 生成文件名
+    # 生成文件名和路径（保存到output文件夹）
     file_name = sanitize_filename(subject_data.get("name_cn") or subject_data.get("name", "default") + ".md")
+    output_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "output")
+    os.makedirs(output_dir, exist_ok=True)  # 确保output文件夹存在
+    file_path = os.path.join(output_dir, file_name)
 
     # 提取基本数据
     name = subject_data.get("name", "")
@@ -93,7 +112,7 @@ def write_extended_subject_data(user_id,subject_id,token):
     combined_tags = list(subject_tags.union(user_tags))
 
     # 写入文件
-    with open(file_name, 'w', encoding='utf-8') as f:
+    with open(file_path, 'w', encoding='utf-8') as f:
         f.write("---\n")
         f.write(f"原名: {name}\n")
         f.write(f"话数: {episodes}\n")
@@ -170,8 +189,11 @@ def write_extended_subject_data(user_id,subject_id,token):
 
 # 依次写入多个条目
 def process_subject_ids(user_id, token):
-    existing_files = set(os.listdir())
-    with open('subject_ids.txt', 'r', encoding='utf-8') as f:
+    output_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "output")
+    os.makedirs(output_dir, exist_ok=True)  # 确保output文件夹存在
+    existing_files = set(os.listdir(output_dir)) if os.path.exists(output_dir) else set()
+    subject_ids_path = get_project_root_path('subject_ids.txt')
+    with open(subject_ids_path, 'r', encoding='utf-8') as f:
         subject_ids = f.read().split(',')
     for count, subject_id in enumerate(subject_ids, start=1):
         subject_data = Bangumi.getsubject(subject_id,user_id)
